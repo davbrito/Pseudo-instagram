@@ -1,2 +1,5 @@
+# configuración del editor
+.vscode/
+
 #dependencias para el frontend
 frontend/node_modules
