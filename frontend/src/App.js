@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import 'materialize-css'
+import { Button } from 'react-materialize';
 
 class App extends Component{
   render(){
-    return (<h1>ola ke ase</h1>)
+    return (<Button>Hola</Button>)
   }
 }
 
