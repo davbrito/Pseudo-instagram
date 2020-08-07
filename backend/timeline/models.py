@@ -9,13 +9,9 @@ USER_MODEL = User
 
 def user_uploads_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<year>/<month>/<day>/<filename>
+    extension = os.path.splitext(filename)[1]
     return (f'uploads/user_{instance.user.id}/'
-            f'{instance.posted.strftime(r"%Y%m%d_%H%M%S")}'
-            f'{os.path.splitext(filename)[1]}')
-
-
-def profile_directory_path(instance, filename):
-    return f'uploads/user_{instance.user.id}/profile/{filename}'
+            f'{instance.posted.strftime(r"%Y%m%d_%H%M%S")}{extension}')
 
 
 class Post(models.Model):
