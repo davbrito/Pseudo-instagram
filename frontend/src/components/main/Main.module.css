@@ -1,0 +1,21 @@
+.background{
+    width: 100%;
+    height: 100vh;
+    background: url('/images/3339809.jpg') no-repeat top;
+    background-size: cover;
+}
+
+.container{
+    padding-top: 10vh;
+}
+
+.rowContainer{
+    composes: col s12 m12 l6 offset-l6 from global;
+}
+
+@media screen and (max-width:992px){
+    .rowContainer{
+        display:flex;
+        justify-content:center;
+    }
+}

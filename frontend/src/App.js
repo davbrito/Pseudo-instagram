@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
-import 'materialize-css'
-import { Button } from 'react-materialize';
+import React from 'react';
+import Main from './components/main/Main'
 
-class App extends Component{
-  render(){
-    return (<Button>Hola</Button>)
-  }
+
+function App(){
+
+    return (<Main/>)
 }
 
 export default App;
