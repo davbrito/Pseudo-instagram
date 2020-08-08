@@ -15,7 +15,10 @@ def user_uploads_directory_path(instance, filename):
 
 
 class Post(models.Model):
-    user = models.ForeignKey(USER_MODEL, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(USER_MODEL,
+                             related_name='posts',
+                             on_delete=models.SET_NULL,
+                             null=True)
     posted = models.DateTimeField(auto_now_add=True)
     image = models.ImageField('post image',
                               upload_to=user_uploads_directory_path)
@@ -35,7 +38,10 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(USER_MODEL, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(USER_MODEL,
+                             related_name='comments',
+                             on_delete=models.SET_NULL,
+                             null=True)
     created = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     text = models.TextField('comment text')

@@ -15,14 +15,10 @@ DEFAULT_PROFILE_PICTURE = ImageFile(
     os.path.join(settings.MEDIA_ROOT, 'default_profile.jpg'))
 
 
-class Follows(models.ManyToManyRel):
-    pass
-
-
 class Profile(models.Model):
     user = models.OneToOneField(User, models.CASCADE)
     picture = models.ImageField('profile picture',
                                 upload_to=profile_directory_path,
                                 default=DEFAULT_PROFILE_PICTURE)
-    bio = models.TextField('profile bio', default='')
-    followed = models.Ma
+    bio = models.TextField('profile bio', blank=True)
+    followed = models.ManyToManyField('self', blank=True)
