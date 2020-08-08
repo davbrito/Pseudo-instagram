@@ -25,8 +25,14 @@ class CommentList(generics.ListCreateAPIView):
     """
     serializer_class = CommentSerializer
 
-    def get_queryset(self, post_id):
-        return Post.objects.get(id=post_id).comment_set.all()
+    def get_queryset(self):
+        return Post.objects.get(id=self.kwargs['post_id']).comment_set.all()
+
+    def get_serializer_context(self):
+        return {
+            'post': Post.objects.get(id=self.kwargs['post_id']),
+            **super().get_serializer_context(),
+        }
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
