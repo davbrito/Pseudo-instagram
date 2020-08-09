@@ -30,3 +30,4 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Post
         fields = ['url', 'user', 'posted', 'image', 'description', 'comments']
+        read_only_fields = ['user', 'comments']
