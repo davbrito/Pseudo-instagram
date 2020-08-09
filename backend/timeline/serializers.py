@@ -9,20 +9,23 @@ from .models import Comment, Post
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email']
+        fields = ['url', 'id', 'username', 'email', 'posts']
 
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
     # user = UserSerializer()
-
     class Meta:
         model = Comment
-        fields = ['user', 'created', 'post', 'text']
+        fields = ['url', 'user', 'created', 'post', 'text']
+        read_only_fields = ['user', 'post']
 
 
 class PostSerializer(serializers.HyperlinkedModelSerializer):
     # user = UserSerializer()
-    comments = CommentSerializer(many=True, read_only=True, default=[])
+    # comments = CommentSerializer(many=True, read_only=True, default=[])
+    # user = serializers.ReadOnlyField(source='user.username')
+
+    # extra_kwargs = {'user': {'read_only': True}}
 
     class Meta:
         model = Post

@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
-from rest_framework import generics, permissions, status, views, viewsets
-from rest_framework.response import Response
+from rest_framework import permissions, viewsets
 
 from .models import Comment, Post
+from .permissions import IsTheUserWhoCreatedItOrReadOnly
 from .serializers import CommentSerializer, PostSerializer, UserSerializer
 
 
@@ -12,35 +12,28 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-# class CommentViewSet(viewsets.ModelViewSet):
-#     """
-#     API endpoint that allows comments to be viewed or edited.
-#     """
-#     queryset = Comment.objects.all()
-#     serializer_class = GroupSerializer
-# #     permission_classes = [permissions.IsAuthenticated]
-class CommentList(generics.ListCreateAPIView):
+class CommentViewSet(viewsets.ModelViewSet):
     """
-    List all comments, or create a new comment.
+    API endpoint that allows comments to be viewed or edited.
     """
+    queryset = Comment.objects.order_by('-created')
     serializer_class = CommentSerializer
 
-    def get_queryset(self):
-        return Post.objects.get(id=self.kwargs['post_id']).comment_set.all()
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly, IsTheUserWhoCreatedItOrReadOnly
+    ]
 
-    def get_serializer_context(self):
-        return {
-            'post': Post.objects.get(id=self.kwargs['post_id']),
-            **super().get_serializer_context(),
-        }
+    def perform_create(self, serializer):
+        data = {'user': self.request.user}
+        if 'post_id' in self.kwargs:
+            data['post'] = Post.objects.get(id=self.kwargs['post_id'])
+        serializer.save(**data)
 
-
-class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    List all comments, or create a new comment.
-    """
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        if 'post_id' in self.kwargs:
+            return queryset.filter(post__id=self.kwargs['post_id'])
+        return queryset
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -49,4 +42,10 @@ class PostViewSet(viewsets.ModelViewSet):
     """
     queryset = Post.objects.all().order_by('-posted')
     serializer_class = PostSerializer
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly, IsTheUserWhoCreatedItOrReadOnly
+    ]
+
+    def perform_create(self, serializer):
+        data = {'user': self.request.user}
+        serializer.save(**data)
