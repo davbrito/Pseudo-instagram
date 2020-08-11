@@ -3,3 +3,6 @@
 
 #dependencias para el frontend
 frontend/node_modules
+
+# cache del interprete de python
+__pycache__/
