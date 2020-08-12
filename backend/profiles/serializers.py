@@ -1,11 +1,29 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from .models import Profile
 
+DEFAULT_PROFILE_PICTURE = 'default_profile.jpg'
+
+
+class ProfilePictureField(serializers.ImageField):
+    def __init__(self, *args, **kwargs):
+        super().__init__(allow_null=True, *args, **kwargs)
+
+    def to_representation(self, value):
+        if not value:
+            url = settings.MEDIA_URL + DEFAULT_PROFILE_PICTURE
+            request = self.context.get('request', None)
+            if request is not None:
+                return request.build_absolute_uri(url)
+            return url
+        return super().to_representation(value)
+
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     # serializers.ImageField
+    picture = ProfilePictureField()
     posts = serializers.HyperlinkedRelatedField(many=True,
                                                 read_only=True,
                                                 view_name='post-detail',
@@ -24,7 +42,6 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         model = Profile
         fields = ['picture', 'bio', 'followed', 'followers', 'posts']
         read_only_fields = ('followed', )
-        extra_kwargs = {'post': {'source': 'user.posts'}}
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -39,8 +56,5 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             'url': {
                 'view_name': 'user-detail',
                 'lookup_field': 'username'
-            },
-            'posts': {
-                'lookup_url_kwarg': 'post_pk'
             }
         }

@@ -1,10 +1,9 @@
 import os.path
 
+from django.conf import settings
 # from django.contrib.auth.models import User
 from django.db import models
 from django.utils import html, timezone
-
-USER_MODEL = 'auth.User'
 
 
 def user_uploads_directory_path(instance, filename):
@@ -17,14 +16,15 @@ def user_uploads_directory_path(instance, filename):
 class Post(models.Model):
     objects: models.Manager
 
-    user = models.ForeignKey(USER_MODEL,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='posts',
                              on_delete=models.SET_NULL,
                              null=True)
 
     posted = models.DateTimeField(auto_now_add=True)
     image = models.ImageField('post image',
-                              upload_to=user_uploads_directory_path)
+                              upload_to=user_uploads_directory_path,
+                              blank=False)
     description = models.TextField('post description')
 
     class Meta:
@@ -43,7 +43,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
     objects: models.Manager
-    user = models.ForeignKey(USER_MODEL,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='comments',
                              on_delete=models.SET_NULL,
                              null=True)

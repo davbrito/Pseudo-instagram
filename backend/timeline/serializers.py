@@ -64,9 +64,5 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
             },
             'user': {
                 'lookup_field': 'username',
-            },
-            'image': {
-                'default':
-                '<url de imagen por defecto>'  # TODO: agregar url por defecto
             }
         }
