@@ -51,21 +51,19 @@ class PostViewSet(viewsets.ModelViewSet):
                         status=status.HTTP_201_CREATED,
                         headers=headers)
 
-    @decorators.action(
-        detail=True,
-        methods=['get', 'put', 'patch'],
-        url_path=r'comments/(?P<comment_pk>[^/.]+)',
-        # url_path=r'comments/(P<comment_id>:\d+)',
-        url_name='comment-detail',
-        lookup_field='pk',
-        lookup_url_kwarg='comment_pk',
-        queryset=Comment.objects.all(),
-        serializer_class=CommentSerializer,
-        permission_classes=[
-            permissions.IsAuthenticatedOrReadOnly,
-            IsTheUserWhoCreatedItOrReadOnly
-        ],
-        name='Instancia de Comentario')
+    @decorators.action(detail=True,
+                       methods=['get', 'put', 'patch'],
+                       url_path=r'comments/(?P<comment_pk>[\d]+)',
+                       url_name='comment-detail',
+                       lookup_field='pk',
+                       lookup_url_kwarg='comment_pk',
+                       queryset=Comment.objects.all(),
+                       serializer_class=CommentSerializer,
+                       permission_classes=[
+                           permissions.IsAuthenticatedOrReadOnly,
+                           IsTheUserWhoCreatedItOrReadOnly
+                       ],
+                       name='Instancia de Comentario')
     def comment_detail(self, request, post_pk=None, comment_pk=None):
         if request.method == 'GET':
             return self.retrieve(request)

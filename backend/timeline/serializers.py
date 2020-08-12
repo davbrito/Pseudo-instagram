@@ -22,7 +22,6 @@ class CommentHyperlink(serializers.HyperlinkedIdentityField):
                       kwargs=url_kwargs,
                       request=request,
                       format=format)
-        print(f'*{url=}')
         return url
 
 
