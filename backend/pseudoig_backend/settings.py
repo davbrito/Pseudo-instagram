@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'timeline.apps.TimelineConfig',
+    'profiles.apps.ProfilesConfig',
 ]
 
 MIDDLEWARE = [

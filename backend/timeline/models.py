@@ -16,17 +16,19 @@ def user_uploads_directory_path(instance, filename):
 
 class Post(models.Model):
     objects: models.Manager
+
     user = models.ForeignKey(USER_MODEL,
                              related_name='posts',
                              on_delete=models.SET_NULL,
                              null=True)
+
     posted = models.DateTimeField(auto_now_add=True)
     image = models.ImageField('post image',
                               upload_to=user_uploads_directory_path)
     description = models.TextField('post description')
 
     class Meta:
-        ordering = ['posted']
+        ordering = ['-posted']
 
     def __str__(self):
         return (f'Post({self.id}) de {self.user.username} ({self.posted}):'
@@ -45,10 +47,10 @@ class Comment(models.Model):
                              related_name='comments',
                              on_delete=models.SET_NULL,
                              null=True)
-    created = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey(Post,
                              related_name='comments',
                              on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
     text = models.TextField('comment text')
 
     class Meta:
