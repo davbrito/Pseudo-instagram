@@ -11,6 +11,11 @@ def profile_directory_path(instance, filename):
     return f'uploads/user_{instance.user.id}/profile{extension}'
 
 
+def default_profile_picture():
+    return images.ImageFile(
+        os.path.join(settings.MEDIA_ROOT, 'default_profile.jpg'))
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, models.CASCADE, related_name='profile')
     picture = models.ImageField('profile picture',

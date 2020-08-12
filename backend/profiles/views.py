@@ -56,6 +56,23 @@ class UserViewSet(ModelViewSet):
             raise NotFound(detail='This user doesn´t have a profile to follow')
 
     @action(detail=True,
+            methods=['delete'],
+            url_path='profile/unfollow',
+            permission_classes=[permissions.IsAuthenticated])
+    def unfollow(self, request: Request, username=None):
+        self.get_object().profile.followed.remove(request.user.profile)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        # try:
+        #     this_profile = self.get_object().profile
+        #     request_profile = request.user.profile
+        #     if this_profile == request_profile:
+        #         raise ValidationError('you can´t unfollow yourself')
+        #     request_profile.followed.remove(this_profile)
+        #     return Response(status=status.HTTP_204_NO_CONTENT)
+        # except User.profile.RelatedObjectDoesNotExist as e:
+        #     raise NotFound(detail='This user doesn´t have a profile')
+
+    @action(detail=True,
             methods=['get'],
             url_path='profile/followers',
             serializer_class=UserSerializer
