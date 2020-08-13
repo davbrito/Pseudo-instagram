@@ -19,23 +19,14 @@ class PostViewSet(viewsets.ModelViewSet):
         permissions.IsAuthenticatedOrReadOnly, IsTheUserWhoCreatedItOrReadOnly
     ]
 
-    lookup_field = 'pk'
     lookup_url_kwarg = 'post_pk'
 
-    def create(self, request: Request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data,
-                        status=status.HTTP_201_CREATED,
-                        headers=headers)
+    def get_serializer_context(self):
+        return dict(post=self.get_object(), **super().get_serializer_context())
 
     @decorators.action(detail=True,
                        methods=['get', 'put', 'patch'],
                        url_path=r'comments/(?P<comment_pk>[\d]+)',
-                       url_name='comment-detail',
-                       lookup_field='pk',
                        lookup_url_kwarg='comment_pk',
                        queryset=Comment.objects.all(),
                        serializer_class=CommentSerializer,
@@ -55,7 +46,6 @@ class PostViewSet(viewsets.ModelViewSet):
     @decorators.action(detail=True,
                        methods=['get', 'post'],
                        url_path=r'comments',
-                       url_name='comment-list',
                        serializer_class=CommentSerializer,
                        permission_classes=[permissions.IsAuthenticated],
                        name='Lista de Comentarios')
@@ -63,15 +53,10 @@ class PostViewSet(viewsets.ModelViewSet):
         if request.method == 'GET':
             return list_queryset(self, self.get_object().comments.all())
         if request.method == 'POST':
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(user=request.user, post=self.get_object())
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return self.create(request)
 
     @decorators.action(detail=True,
                        methods=['get', 'post', 'delete'],
-                       url_path=r'likes',
-                       url_name='likes',
                        serializer_class=ProfileSerializer,
                        permission_classes=[permissions.IsAuthenticated],
                        name='Likes')

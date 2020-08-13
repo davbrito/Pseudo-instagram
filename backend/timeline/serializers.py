@@ -8,7 +8,6 @@ from .models import Comment, Post
 
 class CommentHyperlink(serializers.HyperlinkedIdentityField):
     view_name = 'post-comment-detail'
-    lookup_field = 'pk'
     lookup_url_kwarg = 'comment_pk'
 
     # queryset = Comment.objects.all()
@@ -30,15 +29,17 @@ class CommentHyperlink(serializers.HyperlinkedIdentityField):
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
     url = CommentHyperlink()
 
-    # user = UserHyperlink()
+    def save(self, **kwargs):
+        return super().save(user=self.context['request'].user,
+                            post=self.context['post'],
+                            **kwargs)
 
     class Meta:
         model = Comment
         fields = ['url', 'user', 'created', 'post', 'text']
-        read_only_fields = ['user', 'post']
+        read_only_fields = ['user', 'created', 'post']
         extra_kwargs = {
             'post': {
-                'lookup_field': 'pk',
                 'lookup_url_kwarg': 'post_pk'
             },
             'user': {
@@ -54,6 +55,9 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
                                            source='likes.count')
     likes_list = serializers.HyperlinkedIdentityField(
         view_name='post-likes', lookup_url_kwarg='post_pk')
+
+    def save(self, **kwargs):
+        return super().save(user=self.context['request'].user, **kwargs)
 
     class Meta:
         model = Post
