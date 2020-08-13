@@ -4,10 +4,10 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from .models import Profile
-from .permissions import IsOwnerOrReadOnly, ItsYourselfOrReadOnly
+from .permissions import IsOwnerOrReadOnly, ItsYourselfOrReadOnly, ReadOnly
 from .serializers import ProfileSerializer, UserSerializer
 
 # class ProfileViewSet(ModelViewSet):
@@ -18,10 +18,7 @@ from .serializers import ProfileSerializer, UserSerializer
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [
-        permissions.IsAuthenticatedOrReadOnly,
-        ItsYourselfOrReadOnly,
-    ]
+    permission_classes = [ReadOnly]
 
     lookup_field = 'username'
 
