@@ -13,6 +13,9 @@ def profile_directory_path(instance, filename):
     return f'uploads/user_{instance.user.id}/profile{extension}'
 
 
+User.Meta.ordering = ('username', )
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, models.CASCADE, related_name='profile')
     picture = models.ImageField('profile picture',
@@ -22,6 +25,9 @@ class Profile(models.Model):
     followed = models.ManyToManyField('Profile',
                                       related_name='followers',
                                       blank=True)
+
+    def username(self):
+        return self.user.username
 
 
 @receiver(post_save, sender=User)

@@ -75,25 +75,17 @@ class UserViewSet(ModelViewSet):
         # except User.profile.RelatedObjectDoesNotExist as e:
         #     raise NotFound(detail='This user doesn´t have a profile')
 
-    @action(detail=True,
-            methods=['get'],
-            url_path='profile/followers',
-            serializer_class=UserSerializer
-            # ,
-            # lookup_field='profile',
-            # lookup_url_kwarg='username'
-            )
-    def profile_followers(self, request: Request, username=None):
-        return self._list_queryset(
-            User.objects.filter(profile__followed__user=self.get_object()))
+    @action(detail=True, methods=['get'], url_path='profile/followers')
+    def profile_followers(self, request: Request, *, username=None):
+        # los usuarios que me siguen son mis seguidores
+        return self._list_queryset(self.get_queryset().filter(
+            profile__followed__user=self.get_object()).order_by('username'))
 
-    @action(detail=True,
-            methods=['get'],
-            url_path='profile/followed',
-            serializer_class=UserSerializer)
-    def profile_followed(self, request: Request, username=None):
-        return self._list_queryset(
-            User.objects.filter(profile__followers=self.get_object().profile))
+    @action(detail=True, methods=['get'], url_path='profile/followed')
+    def profile_followed(self, request: Request, *, username=None):
+        # los usuarios que me tiene como seguidor son a los que he seguido
+        return self._list_queryset(self.get_queryset().filter(
+            profile__followers__user=self.get_object()).order_by('username'))
 
     def _list_queryset(self, queryset):
         queryset = self.filter_queryset(queryset)

@@ -58,3 +58,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
                 'lookup_field': 'username'
             }
         }
+
+    def create(self, validated_data):
+        profile = validated_data.pop('profile')
+        user = super().create(validated_data)
+        ProfileSerializer().update(instance=user.profile,
+                                   validated_data=profile)
+        return user
