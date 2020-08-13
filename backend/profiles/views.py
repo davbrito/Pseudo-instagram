@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from .models import Profile
-from .permissions import IsUserOrReadOnly
+from .permissions import IsOwnerOrReadOnly, ItsYourselfOrReadOnly
 from .serializers import ProfileSerializer, UserSerializer
 
 # class ProfileViewSet(ModelViewSet):
@@ -18,7 +18,10 @@ from .serializers import ProfileSerializer, UserSerializer
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        ItsYourselfOrReadOnly,
+    ]
 
     lookup_field = 'username'
 
@@ -30,7 +33,7 @@ class UserViewSet(ModelViewSet):
             queryset=Profile.objects.all(),
             serializer_class=ProfileSerializer,
             permission_classes=[
-                permissions.IsAuthenticatedOrReadOnly, IsUserOrReadOnly
+                permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly
             ])
     def profile(self, request: Request, username=None):
         if request.method == 'GET':
