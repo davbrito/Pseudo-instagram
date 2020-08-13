@@ -1,36 +1,16 @@
-from rest_framework import decorators, permissions, status, viewsets
+from rest_framework import (decorators, permissions, serializers, status,
+                            views, viewsets)
 from rest_framework.request import Request
 from rest_framework.response import Response
+
+from _utilities.views import list_queryset
+from profiles.serializers import ProfileSerializer
 
 from .models import Comment, Post
 from .permissions import IsTheUserWhoCreatedItOrReadOnly
 from .serializers import CommentSerializer, PostSerializer
 
-# class CommentViewSet(viewsets.ModelViewSet):
-#     """
-#     API endpoint that allows comments to be viewed or edited.
-#     """
-#     queryset = Comment.objects.all()
-#     serializer_class = CommentSerializer
 
-#     permission_classes = [
-#         permissions.IsAuthenticatedOrReadOnly,
-# IsTheUserWhoCreatedItOrReadOnly,
-#     ]
-
-#     def create(self, request):
-#         request.data['user']= self.request.user
-#         if 'post_id' in self.kwargs:
-#             request.data['post'] = Post.objects.get(
-# id=self.kwargs['post_id'])
-#         serializer.save(**data)
-
-
-#     def filter_queryset(self, queryset):
-#         queryset = super().filter_queryset(queryset)
-#         if 'post_id' in self.kwargs:
-#             return queryset.filter(post__id=self.kwargs['post_id'])
-#         return queryset
 class PostViewSet(viewsets.ModelViewSet):
     """API endpoint that allows posts to be viewed or edited."""
     queryset = Post.objects.all()
@@ -81,15 +61,26 @@ class PostViewSet(viewsets.ModelViewSet):
                        name='Lista de Comentarios')
     def comment_list(self, request, post_pk=None):
         if request.method == 'GET':
-            queryset = self.filter_queryset(self.get_object().comments.all())
-            page = self.paginate_queryset(queryset)
-            if page is not None:
-                serializer = self.get_serializer(page, many=True)
-                return self.get_paginated_response(serializer.data)
-            serializer = self.get_serializer(queryset, many=True)
-            return Response(serializer.data)
+            return list_queryset(self, self.get_object().comments.all())
         if request.method == 'POST':
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save(user=request.user, post=self.get_object())
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @decorators.action(detail=True,
+                       methods=['get', 'post', 'delete'],
+                       url_path=r'likes',
+                       url_name='likes',
+                       serializer_class=ProfileSerializer,
+                       permission_classes=[permissions.IsAuthenticated],
+                       name='Likes')
+    def likes(self, request, post_pk=None):
+        if request.method == 'GET':
+            return list_queryset(self, self.get_object().likes.all())
+        if request.method == 'POST':
+            self.get_object().likes.add(request.user.profile)
+            return Response(status=status.HTTP_201_CREATED)
+        if request.method == 'DELETE':
+            self.get_object().likes.remove(request.user.profile)
+            return Response(status=status.HTTP_204_NO_CONTENT)

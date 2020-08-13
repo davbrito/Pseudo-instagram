@@ -65,33 +65,19 @@ class UserViewSet(ModelViewSet):
     def unfollow(self, request: Request, username=None):
         self.get_object().profile.followed.remove(request.user.profile)
         return Response(status=status.HTTP_204_NO_CONTENT)
-        # try:
-        #     this_profile = self.get_object().profile
-        #     request_profile = request.user.profile
-        #     if this_profile == request_profile:
-        #         raise ValidationError('you can´t unfollow yourself')
-        #     request_profile.followed.remove(this_profile)
-        #     return Response(status=status.HTTP_204_NO_CONTENT)
-        # except User.profile.RelatedObjectDoesNotExist as e:
-        #     raise NotFound(detail='This user doesn´t have a profile')
 
     @action(detail=True, methods=['get'], url_path='profile/followers')
     def profile_followers(self, request: Request, *, username=None):
         # los usuarios que me siguen son mis seguidores
-        return self._list_queryset(self.get_queryset().filter(
-            profile__followed__user=self.get_object()).order_by('username'))
+        return list_queryset(
+            self,
+            self.get_queryset().filter(profile__followed__user=self.get_object(
+            )).order_by('username'))
 
     @action(detail=True, methods=['get'], url_path='profile/followed')
     def profile_followed(self, request: Request, *, username=None):
         # los usuarios que me tiene como seguidor son a los que he seguido
-        return self._list_queryset(self.get_queryset().filter(
-            profile__followers__user=self.get_object()).order_by('username'))
-
-    def _list_queryset(self, queryset):
-        queryset = self.filter_queryset(queryset)
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        return list_queryset(
+            self,
+            self.get_queryset().filter(profile__followers__user=self.
+                                       get_object()).order_by('username'))

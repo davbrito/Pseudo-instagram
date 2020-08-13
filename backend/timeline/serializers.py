@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
+from profiles.serializers import ProfileSerializer
+
 from .models import Comment, Post
 
 
@@ -48,17 +50,20 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
 class PostSerializer(serializers.HyperlinkedModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
 
-    # comments = CommentHyperlink(many=True)
-
-    # user = UserHyperlink()
+    likes_count = serializers.IntegerField(read_only=True,
+                                           source='likes.count')
+    likes_list = serializers.HyperlinkedIdentityField(
+        view_name='post-likes', lookup_url_kwarg='post_pk')
 
     class Meta:
         model = Post
-        fields = ['url', 'user', 'posted', 'image', 'description', 'comments']
+        fields = [
+            'url', 'user', 'posted', 'image', 'description', 'likes_count',
+            'likes_list', 'comments'
+        ]
         read_only_fields = ['user', 'comments']
         extra_kwargs = {
             'url': {
-                'lookup_field': 'pk',
                 'lookup_url_kwarg': 'post_pk'
             },
             'user': {

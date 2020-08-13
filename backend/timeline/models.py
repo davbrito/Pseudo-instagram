@@ -5,6 +5,8 @@ from django.conf import settings
 from django.db import models
 from django.utils import html, timezone
 
+from profiles.models import Profile
+
 
 def user_uploads_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<datetime><fileext>
@@ -26,6 +28,7 @@ class Post(models.Model):
                               upload_to=user_uploads_directory_path,
                               blank=False)
     description = models.TextField('post description')
+    likes = models.ManyToManyField(Profile, related_name='posts_liked')
 
     class Meta:
         ordering = ['-posted']
