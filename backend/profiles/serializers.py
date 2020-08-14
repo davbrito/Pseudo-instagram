@@ -41,7 +41,10 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Profile
         fields = ['user', 'picture', 'bio', 'followed', 'followers', 'posts']
-        read_only_fields = ('followed', )
+        read_only_fields = (
+            'user',
+            'followed',
+        )
         extra_kwargs = {'user': {'lookup_field': 'username'}}
 
 
@@ -52,13 +55,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ['url', 'id', 'username', 'email', 'profile']
 
-        read_only_fields = ('posts', )
-        extra_kwargs = {
-            'url': {
-                'view_name': 'user-detail',
-                'lookup_field': 'username'
-            }
-        }
+        extra_kwargs = {'url': {'lookup_field': 'username'}}
 
     def create(self, validated_data):
         profile = validated_data.pop('profile')

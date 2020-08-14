@@ -23,3 +23,8 @@ class ItsYourselfOrReadOnly(permissions.BasePermission):
             request.method in permissions.SAFE_METHODS
             # write only allowed to the owner of the post/comment
             or user_obj == request.user)
+
+
+class ReadOnly(permissions.BasePermission):
+    def has_permission(self, request: Request, view):
+        return request.method in permissions.SAFE_METHODS

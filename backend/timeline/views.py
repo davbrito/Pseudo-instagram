@@ -22,7 +22,11 @@ class PostViewSet(viewsets.ModelViewSet):
     lookup_url_kwarg = 'post_pk'
 
     def get_serializer_context(self):
-        return dict(post=self.get_object(), **super().get_serializer_context())
+        context = super().get_serializer_context()
+        if self.action in ('comment_list', 'comment_detail'):
+            context['post'] = self.get_object()
+
+        return context
 
     @decorators.action(detail=True,
                        methods=['get', 'put', 'patch'],
@@ -43,12 +47,13 @@ class PostViewSet(viewsets.ModelViewSet):
         if request.method == 'PATCH':
             return self.partial_update(request)
 
-    @decorators.action(detail=True,
-                       methods=['get', 'post'],
-                       url_path=r'comments',
-                       serializer_class=CommentSerializer,
-                       permission_classes=[permissions.IsAuthenticated],
-                       name='Lista de Comentarios')
+    @decorators.action(
+        detail=True,
+        methods=['get', 'post'],
+        url_path=r'comments',
+        serializer_class=CommentSerializer,
+        permission_classes=[permissions.IsAuthenticatedOrReadOnly],
+        name='Lista de Comentarios')
     def comment_list(self, request, post_pk=None):
         if request.method == 'GET':
             return list_queryset(self, self.get_object().comments.all())

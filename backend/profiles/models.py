@@ -17,7 +17,10 @@ User.Meta.ordering = ('username', )
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, models.CASCADE, related_name='profile')
+    user = models.OneToOneField(User,
+                                models.CASCADE,
+                                editable='False',
+                                related_name='profile')
     picture = models.ImageField('profile picture',
                                 upload_to=profile_directory_path,
                                 blank=True)
