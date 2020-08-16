@@ -27,8 +27,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     posts = serializers.HyperlinkedRelatedField(many=True,
                                                 read_only=True,
                                                 view_name='post-detail',
-                                                source='user.posts',
-                                                lookup_url_kwarg='post_pk')
+                                                source='user.posts')
     followed = serializers.HyperlinkedIdentityField(
         view_name='user-profile-followed',
         lookup_field='user',
@@ -40,11 +39,15 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['user', 'picture', 'bio', 'followed', 'followers', 'posts']
-        read_only_fields = (
+        fields = [
             'user',
+            'picture',
+            'bio',
             'followed',
-        )
+            'followers',
+            'posts',
+        ]
+        read_only_fields = ('user', 'followed')
         extra_kwargs = {'user': {'lookup_field': 'username'}}
 
 
@@ -53,7 +56,13 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ['url', 'id', 'username', 'email', 'profile']
+        fields = [
+            'url',
+            'id',
+            'username',
+            'email',
+            'profile',
+        ]
 
         extra_kwargs = {'url': {'lookup_field': 'username'}}
 

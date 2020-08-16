@@ -8,9 +8,7 @@ from .models import Comment, Post
 
 class CommentHyperlink(serializers.HyperlinkedIdentityField):
     view_name = 'post-comment-detail'
-    lookup_url_kwarg = 'comment_pk'
 
-    # queryset = Comment.objects.all()
     def __init__(self, **kwargs):
         super().__init__(view_name=self.view_name, **kwargs)
 
@@ -18,12 +16,11 @@ class CommentHyperlink(serializers.HyperlinkedIdentityField):
         # Unsaved objects will not yet have a valid URL.
         if hasattr(obj, 'pk') and obj.pk in (None, ''):
             return None
-        url_kwargs = {'post_pk': obj.post.pk, 'comment_pk': obj.pk}
-        url = reverse(view_name,
-                      kwargs=url_kwargs,
-                      request=request,
-                      format=format)
-        return url
+        url_kwargs = {'parent_lookup_post__pk': obj.post.pk, 'pk': obj.pk}
+        return reverse(view_name,
+                       kwargs=url_kwargs,
+                       request=request,
+                       format=format)
 
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
@@ -36,16 +33,15 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ['url', 'user', 'created', 'post', 'text']
-        read_only_fields = ['user', 'created', 'post']
-        extra_kwargs = {
-            'post': {
-                'lookup_url_kwarg': 'post_pk'
-            },
-            'user': {
-                'lookup_field': 'username',
-            },
-        }
+        fields = [
+            'url',
+            'user',
+            'created',
+            'post',
+            'text',
+        ]
+        read_only_fields = ('user', 'created', 'post')
+        extra_kwargs = {'user': {'lookup_field': 'username'}}
 
 
 class PostSerializer(serializers.HyperlinkedModelSerializer):
@@ -53,8 +49,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
 
     likes_count = serializers.IntegerField(read_only=True,
                                            source='likes.count')
-    likes_list = serializers.HyperlinkedIdentityField(
-        view_name='post-likes', lookup_url_kwarg='post_pk')
+    likes_list = serializers.HyperlinkedIdentityField(view_name='post-likes')
 
     def save(self, **kwargs):
         return super().save(user=self.context['request'].user, **kwargs)
@@ -62,15 +57,14 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Post
         fields = [
-            'url', 'user', 'posted', 'image', 'description', 'likes_count',
-            'likes_list', 'comments'
+            'url',
+            'user',
+            'posted',
+            'image',
+            'description',
+            'likes_count',
+            'likes_list',
+            'comments',
         ]
         read_only_fields = ['user', 'comments']
-        extra_kwargs = {
-            'url': {
-                'lookup_url_kwarg': 'post_pk'
-            },
-            'user': {
-                'lookup_field': 'username',
-            }
-        }
+        extra_kwargs = {'user': {'lookup_field': 'username'}}

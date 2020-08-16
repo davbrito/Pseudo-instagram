@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_extensions',
     'dj_rest_auth',
     '_utilities.apps.UtilitiesConfig',
     'timeline.apps.TimelineConfig',
