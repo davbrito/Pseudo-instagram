@@ -1,11 +1,3 @@
-.socialgramLogo{
-    font-family: 'socialgram';
-    font-size: 35px;
-    color:  #292929;
-    margin-top: 0;
-    composes: center-align from global;
-}
-
 .card{
     width: 300px;
     margin:auto;

@@ -1,26 +1,27 @@
 import React, { Component} from 'react'
-import {Card, Row, Button} from 'react-materialize'
+import {Card, Row, Button, Col} from 'react-materialize'
 import styles from './Login.module.css'
+import Logo from '../../styles/Logo.module.css'
 
 class Login extends Component {
     render() {
         return (
             <Card className={styles.card}>
                 <div className="card-content">
-                        <h1 className={styles.socialgramLogo}>Pseudo-Instagram</h1>
+                    <h1 className={Logo.socialgramLogo}>Pseudo-Instagram</h1>
                     <form action="" method="post">
                         <Row className={styles.row}>
-                            <div className="input-field col s12">
+                            <Col s="12" className="input-field">
                                 <input id="User" type="text" className="validate"/>
                                 <label for="User">User name</label>
-                            </div>
-                            <div className="input-field col s12">
-                                <input id="password" type="password" class="validate"/>
+                            </Col>
+                            <Col s="12" className="input-field">
+                                <input id="password" type="password" className="validate"/>
                                 <label for="password">Password</label>
-                            </div>
-                            <div className="col s6 offset-s3">
+                            </Col>
+                            <Col s="6" offset="s3" className="input-field">
                                 <Button className={styles.button}>log in</Button>
-                            </div>
+                            </Col>
                         </Row>
                     </form>
                 </div>

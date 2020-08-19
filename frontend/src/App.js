@@ -1,10 +1,12 @@
 import React from 'react';
-import Main from './components/main/Main'
+//import Main from './components/main/Main'
+//import Home from './components/home/Home'
+import Navbar from './components/navbar/Navbar'
 
 
 function App(){
 
-    return (<Main/>)
+    return (<Navbar/>)
 }
 
 export default App;

@@ -1,0 +1,14 @@
+.Logo{
+    font-size: 20px;
+    font-family: 'socialgram';
+    composes: hide-on-small-only from global;
+}
+
+.fondo{
+    background-color: #a490b3;
+    composes: nav-wrapper from global;
+}
+
+.margen{
+    height: 100%;
+}
