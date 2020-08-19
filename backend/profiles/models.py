@@ -17,28 +17,26 @@ User.Meta.ordering = ('username', )
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User,
-                                models.CASCADE,
-                                editable='False',
-                                related_name='profile')
-    picture = models.ImageField('profile picture',
-                                upload_to=profile_directory_path,
-                                blank=True)
-    bio = models.TextField('profile bio', blank=True)
-    followed = models.ManyToManyField('Profile',
-                                      related_name='followers',
-                                      blank=True)
+    user = models.OneToOneField(
+        User,
+        models.CASCADE,
+        editable='False',
+        related_name='profile',
+    )
+    picture = models.ImageField(
+        'profile picture',
+        upload_to=profile_directory_path,
+        blank=True,
+    )
+    bio = models.TextField(
+        'profile bio',
+        blank=True,
+    )
+    followed = models.ManyToManyField(
+        'Profile',
+        related_name='followers',
+        blank=True,
+    )
 
     def username(self):
         return self.user.username
-
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()

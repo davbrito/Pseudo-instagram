@@ -18,17 +18,24 @@ def user_uploads_directory_path(instance, filename):
 class Post(models.Model):
     objects: models.Manager
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             related_name='posts',
-                             on_delete=models.SET_NULL,
-                             null=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='posts',
+        on_delete=models.SET_NULL,
+        null=True,
+    )
 
     posted = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField('post image',
-                              upload_to=user_uploads_directory_path,
-                              blank=False)
+    image = models.ImageField(
+        'post image',
+        upload_to=user_uploads_directory_path,
+        blank=False,
+    )
     description = models.TextField('post description')
-    likes = models.ManyToManyField(Profile, related_name='posts_liked')
+    likes = models.ManyToManyField(
+        Profile,
+        related_name='posts_liked',
+    )
 
     class Meta:
         ordering = ['-posted']
@@ -47,13 +54,17 @@ class Post(models.Model):
 
 class Comment(models.Model):
     objects: models.Manager
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             related_name='comments',
-                             on_delete=models.SET_NULL,
-                             null=True)
-    post = models.ForeignKey(Post,
-                             related_name='comments',
-                             on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='comments',
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    post = models.ForeignKey(
+        Post,
+        related_name='comments',
+        on_delete=models.CASCADE,
+    )
     created = models.DateTimeField(auto_now_add=True)
     text = models.TextField('comment text')
 
