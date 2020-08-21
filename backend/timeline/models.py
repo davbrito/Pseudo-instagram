@@ -41,9 +41,13 @@ class Post(models.Model):
         ordering = ['-posted']
 
     def __str__(self):
-        return (
-            f'Post({self.id}) de {self.user.username} ({self.posted}):'  # pylint: ignore=no-member
-            f' "{self.description_brief()}"')
+        string = 'Post({id}) de {username} ({date}): "{description_brief}"'
+        return string.format(
+            id=self.id,  # pylint: ignore=no-member
+            username=self.user.username,  # pylint: ignore=no-member
+            date=self.posted.strftime('%Y-%m-%d'),  # pylint: ignore=no-member
+            description_brief=self.description_brief(),
+        )
 
     def description_brief(self, max_length: int = 50):
         brief = html.escape(self.description)[:max_length]

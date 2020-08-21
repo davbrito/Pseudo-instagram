@@ -46,7 +46,9 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             return list_queryset(self, self.get_object().likes.all())
         if request.method == 'POST':
             self.get_object().likes.add(request.user.profile)
-            return Response(status=status.HTTP_201_CREATED)
+            return Response({'detail': 'like agregado'},
+                            status=status.HTTP_201_CREATED)
         if request.method == 'DELETE':
             self.get_object().likes.remove(request.user.profile)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({'detail': 'like eliminado'},
+                            status=status.HTTP_204_NO_CONTENT)
