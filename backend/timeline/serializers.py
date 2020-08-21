@@ -56,14 +56,29 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
     likes_list = serializers.HyperlinkedIdentityField(
         view_name='post-likes', lookup_url_kwarg='post_pk')
 
+    love = serializers.SerializerMethodField()
+
     def save(self, **kwargs):
         return super().save(user=self.context['request'].user, **kwargs)
+
+    def get_love(self, obj: Post):
+        request = self.context['request']
+        if request.user and request.user.is_authenticated:
+            profile = request.user.profile
+            return profile in obj.likes.all()
 
     class Meta:
         model = Post
         fields = [
-            'url', 'user', 'posted', 'image', 'description', 'likes_count',
-            'likes_list', 'comments'
+            'url',
+            'user',
+            'posted',
+            'image',
+            'description',
+            'likes_count',
+            'likes_list',
+            'comments',
+            'love',
         ]
         read_only_fields = ['user', 'comments']
         extra_kwargs = {
