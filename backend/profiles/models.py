@@ -32,7 +32,7 @@ class Profile(models.Model):
         'profile bio',
         blank=True,
     )
-    followed = models.ManyToManyField(
+    following = models.ManyToManyField(
         'Profile',
         related_name='followers',
         blank=True,
