@@ -4,10 +4,12 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet
+
+from _utilities.views import list_queryset
 
 from .models import Profile
-from .permissions import IsOwnerOrReadOnly, ItsYourselfOrReadOnly, ReadOnly
+from .permissions import IsOwnerOrReadOnly, ReadOnly
 from .serializers import ProfileSerializer, UserSerializer
 
 # class ProfileViewSet(ModelViewSet):
@@ -45,15 +47,17 @@ class UserViewSet(ModelViewSet):
             url_path='profile/follow',
             permission_classes=[permissions.IsAuthenticated])
     def follow(self, request: Request, username=None):
+        this_user = self.get_object()
         try:
-            this_profile = self.get_object().profile
+            this_profile = this_user.profile
             request_profile = request.user.profile
             if this_profile == request_profile:
                 raise ValidationError('you can´t follow yourself')
             request_profile.following.add(this_profile)
             return Response(status=status.HTTP_201_CREATED)
-        except User.profile.RelatedObjectDoesNotExist as e:
-            raise NotFound(detail='This user doesn´t have a profile to follow')
+        except User.profile.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+            raise NotFound(detail='User %s doesn´t have a profile to follow' %
+                           this_user.username)
 
     @action(detail=True,
             methods=['delete'],
@@ -65,16 +69,18 @@ class UserViewSet(ModelViewSet):
 
     @action(detail=True, methods=['get'], url_path='profile/followers')
     def profile_followers(self, request: Request, *, username=None):
-        # los usuarios que me siguen son mis seguidores
+        user = self.get_object()
         return list_queryset(
             self,
-            self.get_queryset().filter(profile__following__user=self.
-                                       get_object()).order_by('username'))
+            # los perfiles que me siguen son mis seguidores
+            self.get_queryset().filter(profile__following=user.profile),
+        )
 
     @action(detail=True, methods=['get'], url_path='profile/following')
     def profile_following(self, request: Request, *, username=None):
-        # los usuarios que me tiene como seguidor son a los que he seguido
+        user = self.get_object()
         return list_queryset(
             self,
-            self.get_queryset().filter(profile__followers__user=self.
-                                       get_object()).order_by('username'))
+            # los perfiles que me tiene como seguidor son a los que he seguido
+            self.get_queryset().filter(profile__followers=user.profile),
+        )

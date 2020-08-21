@@ -1,11 +1,7 @@
 import os.path
 
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.core.files import images
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 
 def profile_directory_path(instance, filename):
@@ -13,12 +9,14 @@ def profile_directory_path(instance, filename):
     return f'uploads/user_{instance.user.id}/profile{extension}'
 
 
-User.Meta.ordering = ('username', )
+settings.AUTH_USER_MODEL.Meta.ordering = ('username', )
 
 
 class Profile(models.Model):
+    objects: models.Manager
+
     user = models.OneToOneField(
-        User,
+        settings.AUTH_USER_MODEL,
         models.CASCADE,
         editable='False',
         related_name='profile',
@@ -39,4 +37,4 @@ class Profile(models.Model):
     )
 
     def username(self):
-        return self.user.username
+        return self.user.username  # pylint: disable=no-member

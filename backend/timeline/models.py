@@ -3,7 +3,7 @@ import os.path
 from django.conf import settings
 # from django.contrib.auth.models import User
 from django.db import models
-from django.utils import html, timezone
+from django.utils import html
 
 from profiles.models import Profile
 
@@ -24,7 +24,6 @@ class Post(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
-
     posted = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(
         'post image',
@@ -43,9 +42,9 @@ class Post(models.Model):
     def __str__(self):
         string = 'Post({id}) de {username} ({date}): "{description_brief}"'
         return string.format(
-            id=self.id,  # pylint: ignore=no-member
-            username=self.user.username,  # pylint: ignore=no-member
-            date=self.posted.strftime('%Y-%m-%d'),  # pylint: ignore=no-member
+            id=self.id,  # pylint: disable=no-member
+            username=self.user.username,  # pylint: disable=no-member
+            date=self.posted.strftime('%Y-%m-%d'),  # pylint: disable=no-member
             description_brief=self.description_brief(),
         )
 
