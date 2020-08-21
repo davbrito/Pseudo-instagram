@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
-from profiles.serializers import ProfileSerializer
-
 from .models import Comment, Post
 
 
@@ -59,8 +57,8 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
     def get_love(self, obj: Post):
         request = self.context['request']
         if request.user and request.user.is_authenticated:
-            profile = request.user.profile
-            return profile in obj.likes.all()
+            return request.user.profile.loves(obj)
+        return None
 
     class Meta:
         model = Post

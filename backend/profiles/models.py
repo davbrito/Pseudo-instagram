@@ -39,3 +39,11 @@ class Profile(models.Model):
 
     def username(self):
         return self.user.username  # pylint: disable=no-member
+
+    def loves(self, post) -> bool:
+        """Indica si le gusta un post determinado"""
+        return post.likes.filter(pk=self.pk).exists()
+
+    def follows(self, other):
+        """Indica si es seguidor de otro perfil."""
+        return self.following.filter(pk=other.pk).exists()
