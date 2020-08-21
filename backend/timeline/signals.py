@@ -11,7 +11,7 @@ def notify_comment(sender, instance, created, **kwargs):
         notify.send(
             sender=instance.user,
             recipient=instance.post.user,
-            verb='has commented',
+            verb='commented',
             action_onject=instance,
             target=instance.post,
             description='{instance.user.username} has commented your post',
@@ -21,9 +21,7 @@ def notify_comment(sender, instance, created, **kwargs):
 @receiver(m2m_changed, sender=Post.likes.through)
 def notify_like(sender, instance, action, model, pk_set, **kwargs):
     if action == 'post_add':
-        print(instance, pk_set)
         for pk in pk_set:
-            print(f'{pk = }')
             sender = model.objects.get(pk=pk).user
             notify.send(
                 recipient=instance.user,

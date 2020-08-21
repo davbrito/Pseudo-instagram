@@ -43,7 +43,7 @@ class UserViewSet(ModelViewSet):
             return self.partial_update(request)
 
     @action(detail=True,
-            methods=['get'],
+            methods=['post'],
             url_path='profile/follow',
             permission_classes=[permissions.IsAuthenticated])
     def follow(self, request: Request, username=None):
@@ -54,7 +54,10 @@ class UserViewSet(ModelViewSet):
             if this_profile == request_profile:
                 raise ValidationError('you can´t follow yourself')
             request_profile.following.add(this_profile)
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(
+                {'detail': f'ahora sigues a {request_profile.username()}'},
+                status=status.HTTP_201_CREATED,
+            )
         except User.profile.RelatedObjectDoesNotExist:  # pylint: disable=no-member
             raise NotFound(detail='User %s doesn´t have a profile to follow' %
                            this_user.username)

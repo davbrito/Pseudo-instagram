@@ -1,6 +1,7 @@
 import os.path
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import models
 
 
@@ -9,7 +10,7 @@ def profile_directory_path(instance, filename):
     return f'uploads/user_{instance.user.id}/profile{extension}'
 
 
-settings.AUTH_USER_MODEL.Meta.ordering = ('username', )
+get_user_model().Meta.ordering = ('username', )
 
 
 class Profile(models.Model):
