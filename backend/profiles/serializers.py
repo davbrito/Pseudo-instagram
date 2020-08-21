@@ -28,8 +28,8 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
                                                 read_only=True,
                                                 view_name='post-detail',
                                                 source='user.posts')
-    followed = serializers.HyperlinkedIdentityField(
-        view_name='user-profile-followed',
+    following = serializers.HyperlinkedIdentityField(
+        view_name='user-profile-following',
         lookup_field='user',
         lookup_url_kwarg='username')
     followers = serializers.HyperlinkedIdentityField(
@@ -43,11 +43,11 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
             'user',
             'picture',
             'bio',
-            'followed',
+            'following',
             'followers',
             'posts',
         ]
-        read_only_fields = ('user', 'followed')
+        read_only_fields = ('user', 'following')
         extra_kwargs = {'user': {'lookup_field': 'username'}}
 
 

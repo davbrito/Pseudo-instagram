@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_extensions',
     'dj_rest_auth',
+    'notifications',
     '_utilities.apps.UtilitiesConfig',
     'timeline.apps.TimelineConfig',
     'profiles.apps.ProfilesConfig',

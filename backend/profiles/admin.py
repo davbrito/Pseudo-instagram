@@ -7,7 +7,7 @@ from .models import Profile
 class ProfileInline(admin.StackedInline):
     '''Admin View for Profile'''
     model = Profile
-    filter_horizontal = ('followed', )
+    filter_horizontal = ('following', )
 
 
 UserAdmin.inlines = [ProfileInline]
