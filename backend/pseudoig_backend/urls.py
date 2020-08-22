@@ -22,16 +22,19 @@ from rest_framework_extensions.routers import \
     ExtendedDefaultRouter as DefaultRouter
 
 from profiles.views import UserViewSet
+from pseudoig_notifications.views import NotificationViewSet
 from timeline.views import CommentViewSet, PostViewSet
 
 router = DefaultRouter()
 router.register(r'posts', PostViewSet).register(r'comments', CommentViewSet,
                                                 'post-comment', ['post__pk'])
 router.register(r'users', UserViewSet)
+router.register(r'notifications', NotificationViewSet, basename='notification')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('inbox/notifications/', include(notifications.urls, namespace='notifications')),
+    path('inbox/notifications/',
+         include(notifications.urls, namespace='notifications')),
     path('auth/', include('dj_rest_auth.urls')),
     path('api-auth/', include('rest_framework.urls',
                               namespace='rest_framework')),

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     '_utilities.apps.UtilitiesConfig',
     'timeline.apps.TimelineConfig',
     'profiles.apps.ProfilesConfig',
+    'pseudoig_notifications.apps.PseudoigNotificationsConfig',
 ]
 
 MIDDLEWARE = [
