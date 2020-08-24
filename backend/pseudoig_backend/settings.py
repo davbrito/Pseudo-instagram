@@ -12,14 +12,18 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+# SECURITY WARNING: keep the secret key used in production secret!
+try:
+    from .secret_settings import SECRET_KEY
+except ImportError as e:
+    raise ImportError(
+        'No se pudo encontrar las clave secreta de django') from e
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'v*jl2gcd12jt5j!roa%&j27*a8pn_0#v*!q4hie9k^9n_7(+y8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

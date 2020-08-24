@@ -6,3 +6,6 @@ frontend/node_modules
 
 # cache del interprete de python
 __pycache__/
+
+# clave secreta de django y otras configuraciones ocultas
+backend/pseudoig_backend/secret_settings.py
