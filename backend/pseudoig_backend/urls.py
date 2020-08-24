@@ -33,8 +33,8 @@ router.register(r'notifications', NotificationViewSet, basename='notification')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('inbox/notifications/',
-         include(notifications.urls, namespace='notifications')),
+    # path('inbox/notifications/',
+    #      include(notifications.urls, namespace='notifications')),
     path('auth/', include('dj_rest_auth.urls')),
     path('api-auth/', include('rest_framework.urls',
                               namespace='rest_framework')),

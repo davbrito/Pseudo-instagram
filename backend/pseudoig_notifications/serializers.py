@@ -40,8 +40,8 @@ class NotificationSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Notification
-        fields = ("url", "actor", "verb", "action_object", "target", "data",
-                  "deleted", "description", "emailed", "id", "level", "public",
-                  "recipient", "timestamp", "unread")
+        fields = ("url", "id", "actor", "verb", "action_object", "target",
+                  "data", "deleted", "description", "emailed", "level",
+                  "public", "recipient", "timestamp", "unread")
 
         extra_kwargs = {'recipient': {'lookup_field': 'username'}}
