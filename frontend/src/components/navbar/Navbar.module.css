@@ -1,7 +1,8 @@
 .Logo{
     font-size: 20px;
     font-family: 'socialgram';
-    composes: hide-on-small-only from global;
+    padding: 0;
+    height: 100%;
 }
 
 .fondo{
@@ -11,4 +12,30 @@
 
 .margen{
     height: 100%;
+    margin-bottom: 0;
+}
+
+.searcher{
+    width: 100%;
+    padding: 6px 30px 6px 30px;
+    border:0;
+    border-radius: 4px;
+    outline: none;
+    composes: browser-default from global
+}
+
+.searchIcon{
+    width: 20px;
+    position: absolute;
+    top: 1px;
+    left: 14px;
+    composes: material-icons from global
+}
+
+.searchClose{
+    color: rgb(146, 145, 145);
+    position: absolute;
+    top: 1px;
+    right: 14px;
+    composes: material-icons from global
 }

@@ -1,12 +1,11 @@
 import React from 'react';
-//import Main from './components/main/Main'
-//import Home from './components/home/Home'
-import Navbar from './components/navbar/Navbar'
+import Home from './components/home/Home'
+
 
 
 function App(){
 
-    return (<Navbar/>)
+    return (<Home/>)
 }
 
 export default App;
