@@ -15,7 +15,11 @@
     margin-bottom: 0;
 }
 
-.searcher{
+.navIcon :hover{
+    background-color: rgb(0, 0, 0, 0.1);
+}
+
+.searcher {
     width: 100%;
     padding: 6px 30px 6px 30px;
     border:0;
@@ -34,8 +38,12 @@
 
 .searchClose{
     color: rgb(146, 145, 145);
+    height: fit-content;
     position: absolute;
     top: 1px;
     right: 14px;
     composes: material-icons from global
+}
+.searchClose :hover{
+    color: rgb(102, 102, 102);
 }
