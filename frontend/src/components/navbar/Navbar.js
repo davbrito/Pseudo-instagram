@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Container, Row } from 'react-materialize';
+import { Col, Container, Icon, Row } from 'react-materialize';
 import Styles from './Navbar.module.css';
 
 function Title() {
@@ -7,21 +7,21 @@ function Title() {
         <Col s="2">
             <div className={Styles.Logo}>Pseudo</div>
         </Col>
-    )
+    );
 }
 
 class Search extends React.Component {
     constructor(props) {
-        super(props)
-        this.state = { value: '' }
-        this.handleClose = this.handleClose.bind(this)
-        this.handleChange = this.handleChange.bind(this)
-        this.handleSubmit = this.handleSubmit.bind(this)
+        super(props);
+        this.state = { value: '' };
+        this.handleClose = this.handleClose.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleClose() {
         this.setState({ value: '' });
-        document.getElementById('searcher').focus()
+        document.getElementById('searcher').focus();
     }
 
     handleChange(event) {
@@ -44,31 +44,44 @@ class Search extends React.Component {
                     value={this.state.value}
                     onChange={this.handleChange}
                 />
-                <label htmlFor="searcher"><i className={Styles.searchIcon}>search</i></label>
-                <i className={Styles.searchClose} onClick={this.handleClose}>close</i>
+                <label htmlFor="searcher"><Icon className={Styles.searchIcon}>search</Icon></label>
+                <Icon className={Styles.searchClose} onClick={this.handleClose}>close</Icon>
             </Col>
-        )
+        );
     }
+}
+
+function NavIconButton(props) {
+    return (
+        <Col s="2" m="1" align="center" className={Styles.navIcon}>
+            <Icon>{props.name}</Icon>
+        </Col>
+    );
+}
+
+function NavButtons(props) {
+    return props.names.map(name => (<NavIconButton key={name} name={name} />));
 }
 
 function Navbar(props) {
     return (
-        <nav>
-            <div className={Styles.fondo}>
-                <Container className={Styles.margen} >
-                    <Row className={Styles.margen}>
-                        <Title />
-                        <Search />
-                        <Col s="2" m="1" ><i align="center" className="material-icons">home</i></Col>
-                        <Col s="2" m="1" ><i align="center" className="material-icons">inbox</i></Col>
-                        <Col s="2" m="1" ><i align="center" className="material-icons">explore</i></Col>
-                        <Col s="2" m="1" ><i align="center" className="material-icons">favorite_border</i></Col>
-                        <Col s="2" m="1" ><i align="center" className="material-icons">person_outline</i></Col>
-                    </Row>
-                </Container>
-            </div>
-        </nav>
-    )
+        <div className="navbar-fixed">
+            <nav>
+                <div className={Styles.fondo}>
+                    <Container >
+                        <Row >
+                            <Title />
+                            <Search />
+                            <NavButtons names={[
+                                'home', 'inbox', 'explore',
+                                'favorite_border', 'person_outline'
+                            ]} />
+                        </Row>
+                    </Container>
+                </div>
+            </nav>
+        </div>
+    );
 }
 
 
