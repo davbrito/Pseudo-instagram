@@ -1,38 +1,56 @@
-import React,{Component} from 'react';
-import {Container, Row, Col} from 'react-materialize'
-import Styles from './Home.module.css'
-import Navbar from '../navbar/Navbar'
-import Post from '../post/Post'
+import React, { Component } from 'react';
+import { Col, Container, Row } from 'react-materialize';
+import Navbar from '../navbar/Navbar';
+import Post from '../post/Post';
 
 
-const post ={love: true,
-            description: "Es uno de los animales mas lindos del mundo",
-            image: "https://cnnespanol.cnn.com/wp-content/uploads/2019/12/mejores-imagenes-del-ancc83o-noticias-2019-galeria10.jpg?quality=100&strip=info&w=320&h=240&crop=1"
-        }
+const post = {
+    love: true,
+    description: "Es uno de los animales mas lindos del mundo",
+    image: "https://cnnespanol.cnn.com/wp-content/uploads/2019/12/mejores-imagenes-del-ancc83o-noticias-2019-galeria10.jpg?quality=100&strip=info&w=320&h=240&crop=1"
+};
 
-class Home extends Component{
+const posts = [
+    post, post, post, post, post, post
+];
 
-    render(){
-        return(
+const renderPost = (post, i) => (
+    <Post
+        key={i}
+        description={post.description}
+        image={post.image}
+        love={post.love}
+    />
+);
+
+function PostList(props) {
+    return (
+        <Col s="12" m="7" >
+            {posts.map(renderPost)}
+        </Col>
+    );
+}
+
+function ExtraContent(props) {
+    return (
+        <Col m="5" className="hide-on-small-only">
+        </Col>
+    );
+}
+
+class Home extends Component {
+    render() {
+        return (
             <>
-            <Navbar/>
-            <Container>
-                <Row>
-                    <Col s="12" m="7" >
-                        <Post description={post.description} image={post.image}/>
-                        <Post description={post.description} image={post.image}/>
-                        <Post description={post.description} image={post.image}/>
-                        <Post description={post.description} image={post.image}/>
-                        <Post description={post.description} image={post.image}/>
-                        <Post description={post.description} image={post.image}/>
-                    </Col>
-                    <Col m="5" className="hide-on-small-only">
-                    </Col>
-                </Row>
-            </Container>
+                <Navbar />
+                <Container>
+                    <Row>
+                        <PostList />
+                        <ExtraContent />
+                    </Row>
+                </Container>
             </>
-        )
-        
+        );
     }
 
 }
