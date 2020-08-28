@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'react-materialize';
+import { Button, Icon } from 'react-materialize';
 
 
 function PostImage(props) {
@@ -7,7 +7,7 @@ function PostImage(props) {
         <div className="card-image">
             <img src={props.url} alt="" />
         </div>
-    )
+    );
 }
 
 function PostDescription(props) {
@@ -15,44 +15,45 @@ function PostDescription(props) {
         <div className="card-content">
             <p>{props.text}</p>
         </div>
-    )
+    );
 }
 
 class LoveButton extends React.Component {
     constructor(props) {
-        super(props)
-        this.state = { love: this.props.love }
-        this.handleLove = this.handleLove.bind(this)
+        super(props);
+        this.state = { love: this.props.love };
+        this.handleLove = this.handleLove.bind(this);
     }
 
     handleLove(e) {
-        this.setState(state => ({ love: !state.love }))
-        e.preventDefault()
+        this.setState(state => ({ love: !state.love }));
+        // aquí va el código para crear el 'love' mediante la API
+        e.preventDefault();
     }
 
     render() {
         return (
             <Button className="red darken-1" style={{ marginRight: "5px" }} onClick={this.handleLove} >
-                <i className="material-icons">{this.state.love ? "favorite" : "favorite_border"}</i>
+                <Icon>{this.state.love ? "favorite" : "favorite_border"}</Icon>
             </Button>
-        )
+        );
     }
 }
 
 function CommentButton(props) {
     return (
         <Button className="light-blue darken-3" style={{ marginRight: "5px" }} >
-            <i className="material-icons">comment</i>
+            <Icon>comment</Icon>
         </Button>
-    )
+    );
 }
 
 function MoreButton(props) {
     return (
         <Button className="gren accent-3" >
-            <i className="material-icons">more_vert</i>
+            <Icon>more_vert</Icon>
         </Button>
-    )
+    );
 }
 
 function PostActions(props) {
@@ -62,7 +63,7 @@ function PostActions(props) {
             <CommentButton />
             <MoreButton />
         </div>
-    )
+    );
 }
 
 function Post(props) {
@@ -72,9 +73,9 @@ function Post(props) {
             <PostDescription text={props.description} />
             <PostActions love={props.love} />
         </div>
-    )
+    );
 }
 
 
 
-export default Post
+export default Post;
