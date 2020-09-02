@@ -12,14 +12,18 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+# SECURITY WARNING: keep the secret key used in production secret!
+try:
+    from .secret_settings import SECRET_KEY
+except ImportError as e:
+    raise ImportError(
+        'No se pudo encontrar las clave secreta de django') from e
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'v*jl2gcd12jt5j!roa%&j27*a8pn_0#v*!q4hie9k^9n_7(+y8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -29,9 +33,20 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin', 'django.contrib.auth',
-    'django.contrib.contenttypes', 'django.contrib.sessions',
-    'django.contrib.messages', 'django.contrib.staticfiles', 'rest_framework'
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_extensions',
+    'dj_rest_auth',
+    'notifications',
+    '_utilities.apps.UtilitiesConfig',
+    'timeline.apps.TimelineConfig',
+    'profiles.apps.ProfilesConfig',
 ]
 
 MIDDLEWARE = [
@@ -114,12 +129,18 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Django Rest Framework
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES':
-    ['rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly']
+    ['rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'],
+    # Pagination
+    'DEFAULT_PAGINATION_CLASS':
+    'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE':
+    10
 }

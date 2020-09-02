@@ -1,8 +1,8 @@
 from django.apps import AppConfig
 
 
-class TimelineConfig(AppConfig):
-    name = 'timeline'
+class ProfilesConfig(AppConfig):
+    name = 'profiles'
 
     def ready(self):
         from . import signals
