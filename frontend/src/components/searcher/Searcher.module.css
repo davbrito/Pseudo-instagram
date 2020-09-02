@@ -1,0 +1,17 @@
+.form {
+	position: relative;
+}
+
+
+
+.icon{
+	width: 35px;
+	background: #ffff;
+	display: block;
+	position: absolute;
+	top: 0;
+	right: 0;
+	
+	composes: material-icons prefix from global;
+}
+

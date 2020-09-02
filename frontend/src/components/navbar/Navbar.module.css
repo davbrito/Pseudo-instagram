@@ -1,0 +1,49 @@
+.Logo{
+    font-size: 20px;
+    font-family: 'socialgram';
+    padding: 0;
+    height: 100%;
+}
+
+.fondo{
+    background-color: #a490b3;
+    composes: nav-wrapper from global;
+}
+
+.margen{
+    height: 100%;
+    margin-bottom: 0;
+}
+
+.navIcon :hover{
+    background-color: rgb(0, 0, 0, 0.1);
+}
+
+.searcher {
+    width: 100%;
+    padding: 6px 30px 6px 30px;
+    border:0;
+    border-radius: 4px;
+    outline: none;
+    composes: browser-default from global
+}
+
+.searchIcon{
+    width: 20px;
+    position: absolute;
+    top: 1px;
+    left: 14px;
+    composes: material-icons from global
+}
+
+.searchClose{
+    color: rgb(146, 145, 145);
+    height: fit-content;
+    position: absolute;
+    top: 1px;
+    right: 14px;
+    composes: material-icons from global
+}
+.searchClose :hover{
+    color: rgb(102, 102, 102);
+}

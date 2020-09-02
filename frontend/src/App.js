@@ -1,10 +1,11 @@
 import React from 'react';
-import Main from './components/main/Main'
+import Home from './components/home/Home'
+
 
 
 function App(){
 
-    return (<Main/>)
+    return (<Home/>)
 }
 
 export default App;
