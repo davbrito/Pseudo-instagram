@@ -45,7 +45,7 @@ class Search extends React.Component {
                     onChange={this.handleChange}
                 />
                 <label htmlFor="searcher"><Icon className={Styles.searchIcon}>search</Icon></label>
-                <Icon className={Styles.navIcon} className={Styles.searchClose} onClick={this.handleClose}>close</Icon>
+                <Icon className={Styles.navIcon + Styles.searchClose} onClick={this.handleClose}>close</Icon>
             </Col>
         );
     }
