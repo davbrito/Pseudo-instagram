@@ -22,16 +22,20 @@ from rest_framework_extensions.routers import \
     ExtendedDefaultRouter as DefaultRouter
 
 from profiles.views import UserViewSet
-from timeline.views import CommentViewSet, PostViewSet
+from timeline.views import CommentViewSet, PostViewSet, TimelineViewSet
 
 router = DefaultRouter()
+router.register(r'timeline',
+                TimelineViewSet).register(r'comments', CommentViewSet,
+                                          'post-comment', ['post__pk'])
 router.register(r'posts', PostViewSet).register(r'comments', CommentViewSet,
                                                 'post-comment', ['post__pk'])
 router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('inbox/notifications/', include(notifications.urls, namespace='notifications')),
+    path('inbox/notifications/',
+         include(notifications.urls, namespace='notifications')),
     path('auth/', include('dj_rest_auth.urls')),
     path('api-auth/', include('rest_framework.urls',
                               namespace='rest_framework')),
@@ -39,5 +43,4 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

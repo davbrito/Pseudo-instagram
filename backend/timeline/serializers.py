@@ -45,8 +45,7 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
 class PostSerializer(serializers.HyperlinkedModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
 
-    likes_count = serializers.IntegerField(read_only=True,
-                                           source='likes.count')
+    likes_count = serializers.IntegerField(read_only=True, source='likes.count')
     likes_list = serializers.HyperlinkedIdentityField(view_name='post-likes')
 
     love = serializers.SerializerMethodField()

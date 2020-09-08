@@ -10,7 +10,7 @@ def profile_directory_path(instance, filename):
     return f'uploads/user_{instance.user.id}/profile{extension}'
 
 
-get_user_model().Meta.ordering = ('username', )
+get_user_model().Meta.ordering = ('username',)
 
 
 class Profile(models.Model):
