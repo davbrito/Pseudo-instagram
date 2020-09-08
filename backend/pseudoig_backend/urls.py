@@ -25,9 +25,9 @@ from profiles.views import UserViewSet
 from timeline.views import CommentViewSet, PostViewSet, TimelineViewSet
 
 router = DefaultRouter()
-router.register(r'timeline',
-                TimelineViewSet).register(r'comments', CommentViewSet,
-                                          'post-comment', ['post__pk'])
+router.register(r'timeline', TimelineViewSet,
+                basename='timeline').register(r'comments', CommentViewSet,
+                                              'post-comment', ['post__pk'])
 router.register(r'posts', PostViewSet).register(r'comments', CommentViewSet,
                                                 'post-comment', ['post__pk'])
 router.register(r'users', UserViewSet)
