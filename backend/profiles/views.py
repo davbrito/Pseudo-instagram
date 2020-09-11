@@ -76,7 +76,8 @@ class UserViewSet(ModelViewSet):
         return list_queryset(
             self,
             # los perfiles que me siguen son mis seguidores
-            self.get_queryset().filter(profile__following=user.profile),
+            self.get_queryset().filter(profile__following=user.profile
+                                      ).order_by('username'),
         )
 
     @action(detail=True, methods=['get'], url_path='profile/following')
@@ -85,5 +86,6 @@ class UserViewSet(ModelViewSet):
         return list_queryset(
             self,
             # los perfiles que me tiene como seguidor son a los que he seguido
-            self.get_queryset().filter(profile__followers=user.profile),
+            self.get_queryset().filter(profile__followers=user.profile
+                                      ).order_by('username'),
         )
