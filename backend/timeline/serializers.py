@@ -32,6 +32,7 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Comment
         fields = [
+            'id',
             'url',
             'user',
             'created',
@@ -72,6 +73,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Post
         fields = [
+            'id',
             'url',
             'user',
             'posted',
