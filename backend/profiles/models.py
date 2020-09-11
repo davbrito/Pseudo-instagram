@@ -44,6 +44,14 @@ class Profile(models.Model):
         """Indica si le gusta un post determinado"""
         return post.likes.filter(pk=self.pk).exists()
 
-    def follows(self, other):
+    def follow(self, other):
+        """Follow other profile."""
+        return self.following.add(other)
+
+    def unfollow(self, other):
+        """Unfollow other profile."""
+        return self.following.remove(other)
+
+    def follows(self, other: 'Profile'):
         """Indica si es seguidor de otro perfil."""
         return self.following.filter(pk=other.pk).exists()
