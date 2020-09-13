@@ -85,4 +85,5 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
             'comment_list',
             'love',
         ]
+        read_only_fields = ('image', 'posted')
         extra_kwargs = {'user': {'lookup_field': 'username'}}
