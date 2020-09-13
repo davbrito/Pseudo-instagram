@@ -32,6 +32,7 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Comment
         fields = [
+            'id',
             'url',
             'user',
             'created',
@@ -43,9 +44,19 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PostSerializer(serializers.HyperlinkedModelSerializer):
-    comments = CommentSerializer(many=True, read_only=True)
+    comment_count = serializers.IntegerField(
+        read_only=True,
+        source='comments.count',
+    )
+    comment_list = serializers.HyperlinkedIdentityField(
+        view_name='post-comment-list',
+        lookup_url_kwarg='parent_lookup_post__pk',
+    )
 
-    likes_count = serializers.IntegerField(read_only=True, source='likes.count')
+    likes_count = serializers.IntegerField(
+        read_only=True,
+        source='likes.count',
+    )
     likes_list = serializers.HyperlinkedIdentityField(view_name='post-likes')
 
     love = serializers.SerializerMethodField()
@@ -62,6 +73,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Post
         fields = [
+            'id',
             'url',
             'user',
             'posted',
@@ -69,8 +81,9 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
             'description',
             'likes_count',
             'likes_list',
-            'comments',
+            'comment_count',
+            'comment_list',
             'love',
         ]
-        read_only_fields = ['user']
+        read_only_fields = ('image', 'posted')
         extra_kwargs = {'user': {'lookup_field': 'username'}}
