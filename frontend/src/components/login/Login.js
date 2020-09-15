@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import { Button, Card, Col, Row } from 'react-materialize'
-import Logo from '../../styles/Logo.module.css'
-import styles from './Login.module.css'
+import React, { Component } from 'react';
+import { Button, Card, Col, Row } from 'react-materialize';
+import Logo from '../../styles/Logo.module.css';
+import styles from './Login.module.css';
 
 class LoginForm extends Component {
     constructor(props) {
-        super(props)
-        this.state = { username: '', password: '' }
+        super(props);
+        this.state = { username: '', password: '' };
         this.handleInputChange = this.handleInputChange.bind(this);
     }
 
@@ -35,12 +35,12 @@ class LoginForm extends Component {
                             type="password" className="validate" />
                         <label for="password">Password</label>
                     </Col>
-                    <Col s="6" offset="s3" className="input-field">
+                    <Col s={6} offset="s3" className="input-field">
                         <Button className={styles.button}>log in</Button>
                     </Col>
                 </Row>
             </form>
-        )
+        );
     }
 }
 
@@ -52,8 +52,8 @@ function Login() {
                 <LoginForm />
             </div>
         </Card>
-    )
+    );
 }
 
 
-export default Login
+export default Login;
