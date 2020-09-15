@@ -25,7 +25,7 @@ const renderPost = (post, i) => (
 
 function PostList(props) {
     return (
-        <Col s="12" m="7" >
+        <Col s={12} m={7} >
             {posts.map(renderPost)}
         </Col>
     );
@@ -33,7 +33,7 @@ function PostList(props) {
 
 function ExtraContent(props) {
     return (
-        <Col m="5" className="hide-on-small-only">
+        <Col m={5} className="hide-on-small-only">
         </Col>
     );
 }

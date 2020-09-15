@@ -4,7 +4,7 @@ import Styles from './Navbar.module.css';
 
 function Title() {
     return (
-        <Col s="2">
+        <Col s={2}>
             <div className={Styles.Logo}>Pseudo</div>
         </Col>
     );
@@ -35,7 +35,7 @@ class Search extends React.Component {
 
     render(props) {
         return (
-            <Col m="5" className="hide-on-small-only" style={{ position: "relative" }}>
+            <Col m={5} className="hide-on-small-only" style={{ position: "relative" }}>
                 <input
                     id="searcher"
                     className={Styles.searcher}
@@ -53,7 +53,7 @@ class Search extends React.Component {
 
 function NavIconButton(props) {
     return (
-        <Col s="2" m="1" align="center" className={Styles.navIcon}>
+        <Col s={2} m={1} align="center" className={Styles.navIcon}>
             <Icon>{props.name}</Icon>
         </Col>
     );
