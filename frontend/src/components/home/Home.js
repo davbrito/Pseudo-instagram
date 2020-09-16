@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Col, Container, Row } from 'react-materialize';
 import Navbar from '../navbar/Navbar';
 import Post from '../post/Post';
@@ -38,22 +38,27 @@ function ExtraContent(props) {
     );
 }
 
-class Home extends Component {
-    render() {
-        return (
-            <>
-                <Navbar />
-                <Container>
-                    <Row>
-                        <PostList />
-                        <ExtraContent />
-                    </Row>
-                </Container>
-            </>
-        );
-    }
-
+function Content() {
+    return (
+        <Container>
+            <Row>
+                <PostList />
+                <ExtraContent />
+            </Row>
+        </Container>
+    );
 }
+
+function Home() {
+    return (
+        <>
+            <Navbar />
+            <Content />
+        </>
+    );
+}
+
+
 
 
 export default Home;
