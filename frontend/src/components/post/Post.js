@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon } from 'react-materialize';
+import { Button, Card, Icon } from 'react-materialize';
 
 
 function PostImage(props) {
@@ -12,9 +12,7 @@ function PostImage(props) {
 
 function PostDescription(props) {
     return (
-        <div className="card-content">
-            <p>{props.text}</p>
-        </div>
+        <p>{props.text}</p>
     );
 }
 
@@ -52,21 +50,21 @@ function MoreButton(props) {
 
 function PostActions(props) {
     return (
-        <div className="card-action">
+        <>
             <LoveButton love={props.love} />
             <CommentButton />
             <MoreButton />
-        </div>
+        </>
     );
 }
 
 function Post(props) {
     return (
-        <div className="card">
-            <PostImage url={props.image} />
+        <Card
+            header={<PostImage url={props.image} />}
+            actions={<PostActions love={props.love} />}>
             <PostDescription text={props.description} />
-            <PostActions love={props.love} />
-        </div>
+        </Card >
     );
 }
 
