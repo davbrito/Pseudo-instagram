@@ -32,7 +32,7 @@ class Post(models.Model):
     )
     description = models.TextField('post description')
     likes = models.ManyToManyField(
-        'profiles.Profile',
+        settings.AUTH_USER_MODEL,
         related_name='posts_liked',
     )
 
