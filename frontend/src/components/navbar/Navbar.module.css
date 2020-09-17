@@ -15,7 +15,11 @@
     margin-bottom: 0;
 }
 
-.navIcon :hover{
+.navIcon {
+    cursor: pointer;
+}
+
+.navIcon :hover {
     background-color: rgb(0, 0, 0, 0.1);
 }
 
@@ -37,13 +41,18 @@
 }
 
 .searchClose{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
     color: rgb(146, 145, 145);
     height: fit-content;
+    margin: 0;
     position: absolute;
-    top: 1px;
-    right: 14px;
+    top: .85em;
+    right: .5em;
     composes: material-icons from global
 }
-.searchClose :hover{
+.searchClose :hover {
+    background-color: rgb(0, 0, 0, 0.1);
     color: rgb(102, 102, 102);
 }
