@@ -1,48 +1,51 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Button, Card, Col, Row } from 'react-materialize';
 import Logo from '../../styles/Logo.module.css';
 import styles from './Login.module.css';
 
-class LoginForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { username: '', password: '' };
-        this.handleInputChange = this.handleInputChange.bind(this);
-    }
-
-    handleInputChange(event) {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
-        this.setState({ [name]: value });
-    }
-
-    render() {
-        return (
-            <form action="" method="post">
-                <Row className={styles.row}>
-                    <Col s="12" className="input-field">
-                        <input id="User" name="username"
-                            value={this.state.username}
-                            onChange={this.handleInputChange}
-                            type="text" className="validate" />
-                        <label for="User">User name</label>
-                    </Col>
-                    <Col s="12" className="input-field">
-                        <input id="password" name="password"
-                            value={this.state.password}
-                            onChange={this.handleInputChange}
-                            type="password" className="validate" />
-                        <label for="password">Password</label>
-                    </Col>
-                    <Col s={6} offset="s3" className="input-field">
-                        <Button className={styles.button}>log in</Button>
-                    </Col>
-                </Row>
-            </form>
-        );
-    }
+function UsernameLoginField(props) {
+    const [username, setUsername] = useState('');
+    return (
+        <Col s={12} className="input-field">
+            <input id="User" name="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                type="text" className="validate" />
+            <label for="User">User name</label>
+        </Col>);
 }
+
+function PasswordLoginField(props) {
+    const [password, setPassword] = useState('');
+    return (
+        <Col s={12} className="input-field">
+            <input id="password" name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password" className="validate" />
+            <label for="password">Password</label>
+        </Col>);
+}
+
+function LoginButton(props) {
+    return (
+        <Col s={6} offset="s3" className="input-field">
+            <Button className={styles.button}>log in</Button>
+        </Col>);
+}
+
+function LoginForm(props) {
+    return (
+        <form action="" method="post">
+            <Row className={styles.row}>
+                <UsernameLoginField />
+                <PasswordLoginField />
+                <LoginButton />
+            </Row>
+        </form>
+    );
+}
+
 
 function Login() {
     return (

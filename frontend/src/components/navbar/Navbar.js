@@ -10,45 +10,40 @@ function Title() {
     );
 }
 
-class Search extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { value: '' };
-        this.handleClose = this.handleClose.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
+function Search(props) {
+    const [value, setValue] = React.useState('');
 
-    handleClose() {
-        this.setState({ value: '' });
+    const handleClose = () => {
+        setValue('');
         document.getElementById('searcher').focus();
-    }
+    };
 
-    handleChange(event) {
-        this.setState({ value: event.target.value });
-    }
+    const handleChange = (event) => {
+        setValue(event.target.value);
+    };
 
-    handleSubmit(event) {
+    const handleSubmit = (event) => {
         //
         event.preventDefault();
-    }
+    };
 
-    render(props) {
-        return (
-            <Col m={5} className="hide-on-small-only" style={{ position: "relative" }}>
-                <input
-                    id="searcher"
-                    className={Styles.searcher}
-                    type="search"
-                    placeholder="Search"
-                    value={this.state.value}
-                    onChange={this.handleChange}
-                />
-                <label htmlFor="searcher"><Icon className={Styles.searchIcon}>search</Icon></label>
-                <Icon className={Styles.navIcon + Styles.searchClose} onClick={this.handleClose}>close</Icon>
-            </Col>
-        );
-    }
+    return (
+        <Col m={5} className="hide-on-small-only" style={{ position: "relative" }}>
+            <input
+                id="searcher"
+                className={Styles.searcher}
+                type="search"
+                placeholder="Search"
+                value={value}
+                onChange={handleChange}
+            />
+            <label htmlFor="searcher"><Icon className={Styles.searchIcon}>search</Icon></label>
+            <div onClick={handleClose}>
+                <Icon className={Styles.navIcon + ' ' + Styles.searchClose}>close</Icon>
+            </div>
+        </Col>
+    );
+
 }
 
 function NavIconButton(props) {

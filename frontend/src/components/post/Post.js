@@ -18,26 +18,20 @@ function PostDescription(props) {
     );
 }
 
-class LoveButton extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { love: this.props.love };
-        this.handleLove = this.handleLove.bind(this);
-    }
+function LoveButton(props) {
+    const [love, setLove] = React.useState(props.love);
 
-    handleLove(e) {
-        this.setState(state => ({ love: !state.love }));
+    const handleLove = (e) => {
+        setLove(!love);
         // aquí va el código para crear el 'love' mediante la API
         e.preventDefault();
-    }
+    };
 
-    render() {
-        return (
-            <Button className="red darken-1" style={{ marginRight: "5px" }} onClick={this.handleLove} >
-                <Icon>{this.state.love ? "favorite" : "favorite_border"}</Icon>
-            </Button>
-        );
-    }
+    return (
+        <Button className="red darken-1" style={{ marginRight: "5px" }} onClick={handleLove} >
+            <Icon>{love ? "favorite" : "favorite_border"}</Icon>
+        </Button>
+    );
 }
 
 function CommentButton(props) {
