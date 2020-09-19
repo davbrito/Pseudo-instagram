@@ -5,6 +5,7 @@ import Post from '../post/Post';
 
 
 const post = {
+    id: 15,
     love: true,
     description: "Es uno de los animales mas lindos del mundo",
     image: "https://cnnespanol.cnn.com/wp-content/uploads/2019/12/mejores-imagenes-del-ancc83o-noticias-2019-galeria10.jpg?quality=100&strip=info&w=320&h=240&crop=1"
@@ -34,10 +35,10 @@ function usePostList() {
             .then(data => {
                 console.log('data: ', data);
                 console.log(typeof data.results);
-                setPostList(prevPostList => [prevPostList, ...data.results]);
+                setPostList(prevPostList => [...prevPostList, ...data.results]);
                 console.log(data);
             })
-            .catch(err => setPostList([post]));
+            .catch(() => setPostList([post]));
     }, []);
     return postList;
 }
