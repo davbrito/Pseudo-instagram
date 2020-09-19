@@ -61,5 +61,4 @@ class TimelineViewSet(PostViewSet):
     ]
 
     def get_queryset(self):
-        return super().get_queryset().filter(
-            user__profile__followers=self.request.user.profile)
+        return Post.objects.timeline_for(self.request.user)

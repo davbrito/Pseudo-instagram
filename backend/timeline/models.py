@@ -2,6 +2,7 @@ import os.path
 
 from django.conf import settings
 from django.db import models
+from django.db.models.query import QuerySet
 from django.utils import html
 
 
@@ -15,8 +16,16 @@ def user_uploads_directory_path(instance, filename):
                        extension=extension)
 
 
+class PostManager(models.Manager):
+    """Custom Manager for Post model"""
+    def timeline_for(self, user) -> QuerySet:
+        """Returns a queryset with the posts of people followed by `user`"""
+        return self.filter(
+            user__profile__followers=user.profile).order_by('-posted')
+
+
 class Post(models.Model):
-    objects: models.Manager
+    objects = PostManager()
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
