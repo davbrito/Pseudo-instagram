@@ -9,6 +9,7 @@ class IsTheUserWhoCreatedItOrReadOnly(permissions.BasePermission):
     Utilizado para los modelos `Post` y `Comment` donde el campo `user`
     representa el usuario que creó dicho objeto
     """
+
     def has_object_permission(self, request: Request, view, obj):
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.

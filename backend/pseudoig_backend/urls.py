@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 import notifications.urls
+from dj_rest_auth.views import UserDetailsView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -23,9 +24,12 @@ from rest_framework_extensions.routers import \
 
 from profiles.views import UserViewSet
 from pseudoig_notifications.views import NotificationViewSet
-from timeline.views import CommentViewSet, PostViewSet
+from timeline.views import CommentViewSet, PostViewSet, TimelineViewSet
 
 router = DefaultRouter()
+router.register(r'timeline', TimelineViewSet,
+                basename='timeline').register(r'comments', CommentViewSet,
+                                              'post-comment', ['post__pk'])
 router.register(r'posts', PostViewSet).register(r'comments', CommentViewSet,
                                                 'post-comment', ['post__pk'])
 router.register(r'users', UserViewSet)
@@ -35,6 +39,7 @@ urlpatterns = [
     path('', include(router.urls)),
     # path('inbox/notifications/',
     #      include(notifications.urls, namespace='notifications')),
+    path('user/', UserDetailsView.as_view(), name='auth-user'),
     path('auth/', include('dj_rest_auth.urls')),
     path('api-auth/', include('rest_framework.urls',
                               namespace='rest_framework')),

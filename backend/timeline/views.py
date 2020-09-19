@@ -1,18 +1,17 @@
-from rest_framework import (decorators, permissions, serializers, status,
-                            views, viewsets)
+from rest_framework import decorators, permissions, status, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from _utilities.views import list_queryset
 from profiles.serializers import ProfileSerializer
-
-from .models import Comment, Post
-from .permissions import IsTheUserWhoCreatedItOrReadOnly
-from .serializers import CommentSerializer, PostSerializer
+from timeline.models import Comment, Post
+from timeline.permissions import IsTheUserWhoCreatedItOrReadOnly
+from timeline.serializers import CommentSerializer, PostSerializer
 
 
 class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    """ ViewSet for comments in a post """
     # model = Comment
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -22,7 +21,8 @@ class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        if self.action in ('create', ):
+        # put the post in the context when creating a comment
+        if self.action in ('create',):
             context['post'] = Post.objects.get(
                 pk=self.kwargs['parent_lookup_post__pk'])
         return context
@@ -41,7 +41,8 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                        serializer_class=ProfileSerializer,
                        permission_classes=[permissions.IsAuthenticated],
                        name='Likes')
-    def likes(self, request: Request, pk=None):
+    def likes(self, request: Request, pk=None):  #pylint: disable=inconsistent-return-statements
+        del pk
         if request.method == 'GET':
             return list_queryset(self, self.get_object().likes.all())
         if request.method == 'POST':
@@ -52,3 +53,12 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             self.get_object().likes.remove(request.user.profile)
             return Response({'detail': 'like eliminado'},
                             status=status.HTTP_204_NO_CONTENT)
+
+
+class TimelineViewSet(PostViewSet):
+    permission_classes = [
+        permissions.IsAuthenticated, IsTheUserWhoCreatedItOrReadOnly
+    ]
+
+    def get_queryset(self):
+        return Post.objects.timeline_for(self.request.user)

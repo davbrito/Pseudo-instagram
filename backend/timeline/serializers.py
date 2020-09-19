@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
-from profiles.serializers import ProfileSerializer
-
 from .models import Comment, Post
 
 
@@ -34,6 +32,7 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Comment
         fields = [
+            'id',
             'url',
             'user',
             'created',
@@ -45,18 +44,36 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PostSerializer(serializers.HyperlinkedModelSerializer):
-    comments = CommentSerializer(many=True, read_only=True)
+    comment_count = serializers.IntegerField(
+        read_only=True,
+        source='comments.count',
+    )
+    comment_list = serializers.HyperlinkedIdentityField(
+        view_name='post-comment-list',
+        lookup_url_kwarg='parent_lookup_post__pk',
+    )
 
-    likes_count = serializers.IntegerField(read_only=True,
-                                           source='likes.count')
+    likes_count = serializers.IntegerField(
+        read_only=True,
+        source='likes.count',
+    )
     likes_list = serializers.HyperlinkedIdentityField(view_name='post-likes')
+
+    love = serializers.SerializerMethodField()
 
     def save(self, **kwargs):
         return super().save(user=self.context['request'].user, **kwargs)
 
+    def get_love(self, obj: Post):
+        request = self.context['request']
+        if request.user and request.user.is_authenticated:
+            return request.user.profile.loves(obj)
+        return None
+
     class Meta:
         model = Post
         fields = [
+            'id',
             'url',
             'user',
             'posted',
@@ -64,7 +81,9 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
             'description',
             'likes_count',
             'likes_list',
-            'comments',
+            'comment_count',
+            'comment_list',
+            'love',
         ]
-        read_only_fields = ['user', 'comments']
+        read_only_fields = ('image', 'posted')
         extra_kwargs = {'user': {'lookup_field': 'username'}}

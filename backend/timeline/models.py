@@ -1,22 +1,31 @@
 import os.path
 
 from django.conf import settings
-# from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.query import QuerySet
 from django.utils import html
-
-from profiles.models import Profile
 
 
 def user_uploads_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<datetime><fileext>
     extension = os.path.splitext(filename)[1]
-    return (f'uploads/user_{instance.user.id}/'
-            f'{instance.posted.strftime(r"%Y%m%d_%H%M%S")}{extension}')
+    posted = instance.posted.strftime(r"%Y%m%d_%H%M%S")
+    path = 'uploads/user_{user_id}/{posted}{extension}'
+    return path.format(user_id=instance.user.id,
+                       posted=posted,
+                       extension=extension)
+
+
+class PostManager(models.Manager):
+    """Custom Manager for Post model"""
+    def timeline_for(self, user) -> QuerySet:
+        """Returns a queryset with the posts of people followed by `user`"""
+        return self.filter(
+            user__profile__followers=user.profile).order_by('-posted')
 
 
 class Post(models.Model):
-    objects: models.Manager
+    objects = PostManager()
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -32,7 +41,7 @@ class Post(models.Model):
     )
     description = models.TextField('post description')
     likes = models.ManyToManyField(
-        Profile,
+        settings.AUTH_USER_MODEL,
         related_name='posts_liked',
     )
 

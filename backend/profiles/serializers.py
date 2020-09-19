@@ -8,6 +8,7 @@ DEFAULT_PROFILE_PICTURE = 'default_profile.jpg'
 
 
 class ProfilePictureField(serializers.ImageField):
+
     def __init__(self, *args, **kwargs):
         super().__init__(allow_null=True, *args, **kwargs)
 
@@ -57,8 +58,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = [
-            'url',
             'id',
+            'url',
             'username',
             'email',
             'profile',

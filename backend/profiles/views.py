@@ -47,27 +47,32 @@ class UserViewSet(ModelViewSet):
             url_path='profile/follow',
             permission_classes=[permissions.IsAuthenticated])
     def follow(self, request: Request, username=None):
-        this_user = self.get_object()
+        user = self.get_object()
         try:
-            this_profile = this_user.profile
-            request_profile = request.user.profile
-            if this_profile == request_profile:
-                raise ValidationError('you can´t follow yourself')
-            request_profile.following.add(this_profile)
-            return Response(
-                {'detail': f'ahora sigues a {request_profile.username()}'},
-                status=status.HTTP_201_CREATED,
-            )
-        except User.profile.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+            profile = user.profile
+        except User.profile.RelatedObjectDoesNotExist as exc:  # pylint: disable=no-member
             raise NotFound(detail='User %s doesn´t have a profile to follow' %
-                           this_user.username)
+                           user.username)
+        try:
+            request_profile = request.user.profile
+        except User.profile.RelatedObjectDoesNotExist as exc:  # pylint: disable=no-member
+            raise NotFound(detail='Your user %s doesn´t have a profile' %
+                           request.username)
+
+        if profile == request_profile:
+            raise ValidationError('you can´t follow yourself')
+        request_profile.follow(profile)
+        return Response(
+            {'detail': f'ahora sigues a {request_profile.username()}'},
+            status=status.HTTP_201_CREATED,
+        )
 
     @action(detail=True,
             methods=['delete'],
             url_path='profile/unfollow',
             permission_classes=[permissions.IsAuthenticated])
     def unfollow(self, request: Request, username=None):
-        self.get_object().profile.following.remove(request.user.profile)
+        self.get_object().profile.unfollow(request.user.profile)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['get'], url_path='profile/followers')
@@ -76,7 +81,8 @@ class UserViewSet(ModelViewSet):
         return list_queryset(
             self,
             # los perfiles que me siguen son mis seguidores
-            self.get_queryset().filter(profile__following=user.profile),
+            self.get_queryset().filter(profile__following=user.profile
+                                      ).order_by('username'),
         )
 
     @action(detail=True, methods=['get'], url_path='profile/following')
@@ -85,5 +91,6 @@ class UserViewSet(ModelViewSet):
         return list_queryset(
             self,
             # los perfiles que me tiene como seguidor son a los que he seguido
-            self.get_queryset().filter(profile__followers=user.profile),
+            self.get_queryset().filter(profile__followers=user.profile
+                                      ).order_by('username'),
         )

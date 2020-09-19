@@ -3,6 +3,7 @@ from rest_framework.request import Request
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
+
     def has_object_permission(self, request: Request, view, obj):
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.
@@ -14,6 +15,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 
 class ItsYourselfOrReadOnly(permissions.BasePermission):
+
     def has_object_permission(self, request: Request, view, user_obj):
         """Se otorga permiso de escritura si es su propio usuario"""
         # Read permissions are allowed to any request,
@@ -26,5 +28,6 @@ class ItsYourselfOrReadOnly(permissions.BasePermission):
 
 
 class ReadOnly(permissions.BasePermission):
+
     def has_permission(self, request: Request, view):
         return request.method in permissions.SAFE_METHODS

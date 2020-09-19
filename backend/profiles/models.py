@@ -10,7 +10,7 @@ def profile_directory_path(instance, filename):
     return f'uploads/user_{instance.user.id}/profile{extension}'
 
 
-get_user_model().Meta.ordering = ('username', )
+get_user_model().Meta.ordering = ('username',)
 
 
 class Profile(models.Model):
@@ -39,3 +39,19 @@ class Profile(models.Model):
 
     def username(self):
         return self.user.username  # pylint: disable=no-member
+
+    def loves(self, post) -> bool:
+        """Indica si le gusta un post determinado"""
+        return post.likes.filter(pk=self.pk).exists()
+
+    def follow(self, other):
+        """Follow other profile."""
+        return self.following.add(other)
+
+    def unfollow(self, other):
+        """Unfollow other profile."""
+        return self.following.remove(other)
+
+    def follows(self, other: 'Profile'):
+        """Indica si es seguidor de otro perfil."""
+        return self.following.filter(pk=other.pk).exists()
