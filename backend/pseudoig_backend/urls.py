@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 import notifications.urls
+from dj_rest_auth.views import UserDetailsView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -36,6 +37,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('inbox/notifications/',
          include(notifications.urls, namespace='notifications')),
+    path('user/', UserDetailsView.as_view(), name='auth-user'),
     path('auth/', include('dj_rest_auth.urls')),
     path('api-auth/', include('rest_framework.urls',
                               namespace='rest_framework')),
