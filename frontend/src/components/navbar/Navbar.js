@@ -29,7 +29,7 @@ function Search(props) {
 
     return (
         <Col m={5} className="hide-on-small-only" style={{ position: "relative" }}>
-            <spam>
+            <span>
                 <input
                     id="searcher"
                     className={Styles.searcher}
@@ -42,7 +42,7 @@ function Search(props) {
                 <button onClick={handleClose} className={Styles.searchClose}>
                     close
                 </button>
-            </spam>
+            </span>
         </Col>
     );
 

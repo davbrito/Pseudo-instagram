@@ -9,24 +9,44 @@ const post = {
     description: "Es uno de los animales mas lindos del mundo",
     image: "https://cnnespanol.cnn.com/wp-content/uploads/2019/12/mejores-imagenes-del-ancc83o-noticias-2019-galeria10.jpg?quality=100&strip=info&w=320&h=240&crop=1"
 };
+const base_api_url = 'http://localhost:8000';
+const posts_url = `${base_api_url}/posts/?format=json`;
 
-const posts = [
-    post, post, post, post, post, post
-];
 
-const renderPost = (post, i) => (
+
+const renderPost = (post) => (
     <Post
-        key={i}
+        key={post.id}
         description={post.description}
         image={post.image}
         love={post.love}
     />
 );
 
+function usePostList() {
+    const [postList, setPostList] = React.useState([]);
+    React.useEffect(() => {
+        fetch(posts_url)
+            .then(response => {
+                console.log(response);
+                return response.json();
+            })
+            .then(data => {
+                console.log('data: ', data);
+                console.log(typeof data.results);
+                setPostList(prevPostList => [prevPostList, ...data.results]);
+                console.log(data);
+            })
+            .catch(err => setPostList([post]));
+    }, []);
+    return postList;
+}
+
 function PostList(props) {
+    const postList = usePostList();
     return (
         <Col s={12} m={7} >
-            {posts.map(renderPost)}
+            {postList.map(renderPost)}
         </Col>
     );
 }
