@@ -1,6 +1,6 @@
 import notifications.settings
 from django.shortcuts import redirect
-from rest_framework import permissions, viewsets
+from rest_framework import permissions, response, status, viewsets
 from rest_framework.decorators import action
 
 from .serializers import NotificationSerializer
@@ -22,23 +22,14 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(methods=['get'], detail=False, only_unread=True)
     def unread(self, request, **kwargs):
-        assert self.only_unread, ':c'
         return self.list(request)
 
-    @action(methods=['get'], detail=False)
+    @action(methods=['post'], detail=False)
     def mark_all_as_read(self, request, **kwargs):
         self.get_queryset().mark_all_as_read()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
 
-        _next = request.GET.get('next')
-        if _next:
-            return redirect(_next)
-        return redirect('notification-unread')
-
-    @action(methods=['get'], detail=True)
+    @action(methods=['post'], detail=True)
     def mark_as_read(self, request, **kwargs):
         self.get_object().mark_as_read()
-
-        _next = request.GET.get('next')
-        if _next:
-            return redirect(_next)
-        return redirect('notification-unread')
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
