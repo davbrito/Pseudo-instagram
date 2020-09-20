@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Col, Container, Icon, Row } from 'react-materialize';
 import Styles from './Navbar.module.css';
 
@@ -12,25 +12,27 @@ function Title() {
 
 function Search(props) {
     const [value, setValue] = React.useState('');
+    const searcherEl = useRef();
 
     const handleClose = () => {
         setValue('');
-        document.getElementById('searcher').focus();
+        searcherEl.current.focus();
     };
 
     const handleChange = (event) => {
         setValue(event.target.value);
     };
 
-    const handleSubmit = (event) => {
-        //
-        event.preventDefault();
-    };
+    // const handleSubmit = (event) => {
+    //     //
+    //     event.preventDefault();
+    // };
 
     return (
         <Col m={5} className="hide-on-small-only" style={{ position: "relative" }}>
             <input
                 id="searcher"
+                ref={searcherEl}
                 className={Styles.searcher}
                 type="search"
                 placeholder="Search"
