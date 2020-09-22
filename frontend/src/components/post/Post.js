@@ -48,21 +48,16 @@ function MoreButton(props) {
     );
 }
 
-function PostActions(props) {
-    return (
-        <>
-            <LoveButton love={props.love} />
-            <CommentButton />
-            <MoreButton />
-        </>
-    );
-}
-
 function Post(props) {
+    const postActions = [
+        <LoveButton key="love" love={props.love} />,
+        <CommentButton key="comment" />,
+        <MoreButton key="more" />
+    ];
     return (
         <Card
             header={<PostImage url={props.image} />}
-            actions={<PostActions love={props.love} />}>
+            actions={postActions}>
             <PostDescription text={props.description} />
         </Card >
     );

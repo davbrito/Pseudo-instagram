@@ -1,10 +1,9 @@
 import React from 'react';
 import { Col, Container, Row } from 'react-materialize';
-import Navbar from '../navbar/Navbar';
 import Post from '../post/Post';
 
 
-const post = {
+const fakePost = {
     id: 15,
     love: true,
     description: "Es uno de los animales mas lindos del mundo",
@@ -29,53 +28,53 @@ function usePostList() {
     React.useEffect(() => {
         fetch(posts_url)
             .then(response => {
-                console.log(response);
-                return response.json();
+                if (!response || !response.ok)
+                    return [fakePost];
+                return response.json().results;
             })
-            .then(data => {
-                console.log('data: ', data);
-                console.log(typeof data.results);
-                setPostList(prevPostList => [...prevPostList, ...data.results]);
-                console.log(data);
-            })
-            .catch(() => setPostList([post]));
+            .catch(() => [fakePost])
+            .then(postList => {
+                setPostList(prevPostList => [...prevPostList, ...postList]);
+            });
+
+
     }, []);
     return postList;
 }
 
 function PostList(props) {
     const postList = usePostList();
+    const loading = postList.length === 0;
     return (
-        <Col s={12} m={7} >
+        <>
             {postList.map(renderPost)}
-        </Col>
+            {loading && <p>Loading posts...</p>}
+        </>
     );
 }
 
 function ExtraContent(props) {
-    return (
-        <Col m={5} className="hide-on-small-only">
-        </Col>
-    );
+    return (null);
 }
 
 function Content() {
     return (
-        <Container>
-            <Row>
+        <Row>
+            <Col s={12} m={7} >
                 <PostList />
+            </Col>
+            <Col m={5} className="hide-on-small-only">
                 <ExtraContent />
-            </Row>
-        </Container>
+            </Col>
+        </Row>
     );
 }
 
 function Home() {
     return (
-        <>
-            <Navbar />
+        <Container>
             <Content />
-        </>
+        </Container>
     );
 }
 
