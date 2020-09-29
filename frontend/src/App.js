@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import Home from './components/home/Home';
 import Login from './components/login/Login';
@@ -7,59 +7,83 @@ import Navbar from './components/navbar/Navbar';
 const baseUrl = 'http://localhost:8000/';
 const loginUrl = `${baseUrl}/auth/login/`;
 
-var authContext = React.createContext({ user: null, apiToken: null, isAuthenticated: false });
+var authContext = React.createContext(
+    {
+        user: null,
+        apiToken: '',
+        isAuthenticated: false,
+        authenticate: null,
+        signout: null
+    }
+);
 
-const useAuthentication = () => {
+function useAuthentication() {
+    const [user, setUser] = useState(null);
+    const [apiToken, setApiToken] = useState('');
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    const authenticate = async (username, password) => {
-        await new Promise(resolve => setTimeout(() => {
+    const authenticate = (username, password, onAuth) => {
+        setTimeout(() => {
             setIsAuthenticated(true);
-            resolve();
-        }, 3000)); // esto solo para probar
-        console.log(isAuthenticated);
-        // const response = await fetch(loginUrl, { method: 'POST', body: { username, password } });
-        // if (response.ok) {
-        //     setIsAuthenticated(true);
-        // }
-        // return response.json();
+            if (onAuth) {
+                onAuth();
+            }
+        }, 3000); // esto solo para probar
     };
-    return [isAuthenticated, authenticate];
+
+    const signout = (onSignout) => {
+        setTimeout(() => {
+            setIsAuthenticated(false);
+            if (onSignout) {
+                onSignout();
+            }
+        }, 3000);
+    };
+    return { user, setUser, isAuthenticated, authenticate, signout };
+};
+
+const useAuthContext = () => {
+    return useContext(authContext);
 };
 
 function App() {
     const { pathname } = useLocation();
-    const [isAuthenticated, authenticate] = useAuthentication();
+    const auth = useAuthentication();
 
     return (
-        <Switch>
-            <Route path="/login">
-                <Login authenticate={authenticate} />
-            </Route>
-            <Route>
-                {isAuthenticated ?
-                    <>
-                        {/* El navbar aparece en todas las rutas menos en login */}
-                        < Navbar />
-                        <Route path="/home">
-                            <Home />
+        <authContext.Provider value={auth}>
+            <Switch>
+                <Route path="/login">
+                    <Login />
+                </Route>
+                {auth.isAuthenticated ?
+                    (
+                        <Route>
+                            {/* El navbar aparece en todas las rutas menos en login */}
+                            <Navbar />
+                            <Switch>
+                                <Route path="/home">
+                                    <Home />
+                                </Route>
+                                <Redirect to="/home" />
+                            </Switch>
                         </Route>
-                        <Route path="/">
-                            <Redirect to="/home" />
-                        </Route>
-                    </>
-                    : <Redirect from="/"
-                        to={{
-                            pathname: "/login",
-                            search: new URLSearchParams({ next: pathname }).toString()
-                        }} />
+                    ) : (
+                        <Redirect
+                            to={{
+                                pathname: "/login",
+                                search: new URLSearchParams({
+                                    next: pathname
+                                }).toString()
+                            }} />
+                    )
                 }
-            </Route>
-        </Switch>
+            </Switch >
+        </authContext.Provider>
     );
 }
 
 export default App;
 
-export { useAuthentication };
+export { useAuthContext };
 

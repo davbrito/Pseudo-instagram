@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Card, Col, Row } from 'react-materialize';
 import { useHistory, useLocation } from 'react-router-dom';
+import { useAuthContext } from '../../App';
 import { Logo as LogoStyle } from '../navbar/Navbar.module.css';
 import styles from './Login.module.css';
 
@@ -9,6 +10,7 @@ function UsernameLoginField(props) {
     return (
         <Col s={12} className="input-field">
             <input id="User" name="username"
+                autoFocus
                 value={props.value}
                 onChange={props.onChange}
                 type="text" className="validate" />
@@ -30,7 +32,7 @@ function PasswordLoginField(props) {
 function LoginButton(props) {
     return (
         <Col s={6} offset="s3" className="input-field">
-            <Button className={styles.button}>log in</Button>
+            <Button className={styles.button} type="submit" disabled={props.disabled}>log in</Button>
         </Col>
     );
 }
@@ -40,6 +42,7 @@ function useQuery() {
 }
 
 function LoginForm(props) {
+    const { authenticate } = useAuthContext();
     const history = useHistory();
     const query = useQuery();
     const [username, setUsername] = useState('');
@@ -49,21 +52,25 @@ function LoginForm(props) {
     const submitHandler = (e) => {
         e.preventDefault();
         setLoading(true);
-        props.authenticate(username, password)
-            .then(() => { history.push(query.get('next') || '/home'); });
+        authenticate(username, password,
+            () => {
+                history.push({ pathname: query.get('next') || '/home' });
+            });
     };
 
+    const validate = () => {
+        return username.length > 0 && password.length > 0;
+    }
+
     return (
-        <>
-            <form action="" method="" onSubmit={submitHandler}>
-                <Row className={styles.row}>
-                    <UsernameLoginField value={username} onChange={(e) => setUsername(e.target.value)} />
-                    <PasswordLoginField value={password} onChange={(e) => setPassword(e.target.value)} />
-                    <LoginButton />
-                </Row>
-                {loading && <p>Loading...</p>}
-            </form>
-        </>
+        <form onSubmit={submitHandler}>
+            <Row className={styles.row}>
+                <UsernameLoginField value={username} onChange={(e) => setUsername(e.target.value)} />
+                <PasswordLoginField value={password} onChange={(e) => setPassword(e.target.value)} />
+                <LoginButton disabled={!validate()} />
+            </Row>
+            {loading && <p>Loading...</p>}
+        </form>
     );
 }
 
@@ -72,7 +79,7 @@ function Login(props) {
     return (
         <Card className={styles.card}>
             <h1 className={LogoStyle}>Pseudo-Instagram</h1>
-            <LoginForm authenticate={props.authenticate} />
+            <LoginForm />
         </Card>
     );
 }
