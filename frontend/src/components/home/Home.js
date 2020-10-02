@@ -1,7 +1,8 @@
 import React from 'react';
-import { Col, Container, Row } from 'react-materialize';
+import { Col, Row } from 'react-materialize';
+import { timelineUrl } from '../../api/endpoints';
+import { authFetch } from '../../auth';
 import Post from '../post/Post';
-
 
 const fakePost = {
     id: 15,
@@ -9,33 +10,25 @@ const fakePost = {
     description: "Es uno de los animales mas lindos del mundo",
     image: "https://cnnespanol.cnn.com/wp-content/uploads/2019/12/mejores-imagenes-del-ancc83o-noticias-2019-galeria10.jpg?quality=100&strip=info&w=320&h=240&crop=1"
 };
-const base_api_url = 'http://localhost:8000';
-const posts_url = `${base_api_url}/posts/?format=json`;
 
 
-
-const renderPost = (post) => (
-    <Post
-        key={post.id}
-        description={post.description}
-        image={post.image}
-        love={post.love}
-    />
-);
-
-function usePostList() {
+function useTimelinePostList() {
     const [postList, setPostList] = React.useState([]);
+
     React.useEffect(() => {
-        fetch(posts_url)
+        authFetch(timelineUrl)
             .then(response => {
                 if (!response || !response.ok)
                     return [fakePost];
-                return response.json().results;
+                return response.json().then(data => {
+                    console.log(data);
+                    return data.results;
+                });
             })
-            .catch(() => [fakePost])
             .then(postList => {
                 setPostList(prevPostList => [...prevPostList, ...postList]);
-            });
+            })
+            .catch(() => [fakePost]);
 
 
     }, []);
@@ -43,11 +36,18 @@ function usePostList() {
 }
 
 function PostList(props) {
-    const postList = usePostList();
+    const postList = useTimelinePostList();
     const loading = postList.length === 0;
     return (
         <>
-            {postList.map(renderPost)}
+            {postList.map((post) => (
+                <Post
+                    key={post.id}
+                    description={post.description}
+                    image={post.image}
+                    love={post.love}
+                />
+            ))}
             {loading && <p>Loading posts...</p>}
         </>
     );
@@ -72,9 +72,7 @@ function Content() {
 
 function Home() {
     return (
-        <Container>
-            <Content />
-        </Container>
+        <Content />
     );
 }
 

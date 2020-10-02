@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Col, Container, Icon, Row } from 'react-materialize';
 import { NavLink } from 'react-router-dom';
+import { useAuthUser } from '../../auth';
 import Styles from './Navbar.module.css';
 
 function Title() {
@@ -17,7 +18,7 @@ function Search(props) {
     const [query, setQuery] = useState('');
     const searcherEl = useRef(null);
 
-    const handleClose = () => {
+    const handleResetClick = () => {
         setQuery('');
         searcherEl.current.focus();
     };
@@ -33,42 +34,46 @@ function Search(props) {
 
     return (
         <Col m={5} className="hide-on-small-only" style={{ position: "relative" }}>
-            <input
-                id="searcher"
+            <input id="searcher"
                 ref={searcherEl}
                 className={Styles.searcher}
                 type="search"
                 placeholder="Search"
                 value={query}
-                onChange={handleChange}
-            />
+                onChange={handleChange} />
             <label htmlFor="searcher"><Icon className={Styles.searchIcon}>search</Icon></label>
-            <button onClick={handleClose} className={Styles.searchClose}>
+            <button type="reset" onClick={handleResetClick} className={Styles.searchClose}>
                 close
-                </button>
+            </button>
         </Col>
     );
 
 }
 
-function NavIconButton({ name, to }) {
+function NavIconButton({ name, to, children, title }) {
     return (
         <Col s={2} m={1} align="center">
-            <NavLink to={to} className={Styles.navIcon} activeClassName="active">
+            <NavLink to={to} className={Styles.navIcon} activeClassName={Styles.activeNav} title={title}>
                 <Icon>{name}</Icon>
+                {children}
             </NavLink>
         </Col>
     );
 }
 
 function NavButtons(props) {
+    const user = useAuthUser();
     return (
         <>
-            <NavIconButton name={'home'} to={"/home"} />
-            <NavIconButton name={'inbox'} to="#" />
-            <NavIconButton name={'explore'} to="#" />
-            <NavIconButton name={'favorite_border'} to="#" />
-            <NavIconButton name={'person_outline'} to="#" />
+            <NavIconButton name="home" to={"/home"} />
+            <NavIconButton name="inbox" to="/inbox" />
+            <NavIconButton name="explore" to="/explore" />
+            {user &&
+                <>
+                    <NavIconButton title={user.username} name="person_outline" to={'/users/' + user.username} />
+                    <NavIconButton title="Log out" name="logout" to="logout" />
+                </>
+            }
         </>
     );
 }

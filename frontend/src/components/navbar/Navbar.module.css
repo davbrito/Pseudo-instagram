@@ -15,6 +15,10 @@
     margin-bottom: 0;
 }
 
+.activeNav {
+    background-color: rgb(0, 0, 0, 0.1);
+}
+
 .navIcon {
     cursor: pointer;
 }

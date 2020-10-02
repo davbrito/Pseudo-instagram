@@ -1,89 +1,68 @@
-import React, { useContext, useState } from 'react';
-import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Container } from 'react-materialize';
+import { Redirect, Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import { logout, useAuthentication } from './auth';
 import Home from './components/home/Home';
 import Login from './components/login/Login';
 import Navbar from './components/navbar/Navbar';
+import User from './components/user/User';
+import useNext from './hooks/useNext';
 
-const baseUrl = 'http://localhost:8000/';
-const loginUrl = `${baseUrl}/auth/login/`;
-
-var authContext = React.createContext(
-    {
-        user: null,
-        apiToken: '',
-        isAuthenticated: false,
-        authenticate: null,
-        signout: null
-    }
-);
-
-function useAuthentication() {
-    const [user, setUser] = useState(null);
-    const [apiToken, setApiToken] = useState('');
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-    const authenticate = (username, password, onAuth) => {
-        setTimeout(() => {
-            setIsAuthenticated(true);
-            if (onAuth) {
-                onAuth();
-            }
-        }, 3000); // esto solo para probar
-    };
-
-    const signout = (onSignout) => {
-        setTimeout(() => {
-            setIsAuthenticated(false);
-            if (onSignout) {
-                onSignout();
-            }
-        }, 3000);
-    };
-    return { user, setUser, isAuthenticated, authenticate, signout };
-};
-
-const useAuthContext = () => {
-    return useContext(authContext);
-};
+function Logout() {
+    const next = useNext();
+    const history = useHistory();
+    useEffect(() => {
+        logout().then(() => { history.push(next || '/login'); });
+    }, [next, history]);
+    return <p>Logging out.</p>;
+}
 
 function App() {
     const { pathname } = useLocation();
-    const auth = useAuthentication();
+    const [isAuthenticated] = useAuthentication();
 
     return (
-        <authContext.Provider value={auth}>
-            <Switch>
-                <Route path="/login">
-                    <Login />
-                </Route>
-                {auth.isAuthenticated ?
-                    (
+        <Switch>
+            <Route path="/login">
+                <Login />
+            </Route>
+            <Route path="/logout">
+                {isAuthenticated ? <Logout /> : <Redirect to="/login" />}
+            </Route>
+            {isAuthenticated ?
+                (
+                    <Switch>
                         <Route>
                             {/* El navbar aparece en todas las rutas menos en login */}
                             <Navbar />
+                            <Container>
+
                             <Switch>
                                 <Route path="/home">
                                     <Home />
                                 </Route>
+                                    <Route path="/users/:username">
+                                        <User />
+                                    </Route>
                                 <Redirect to="/home" />
                             </Switch>
+                            </Container>
                         </Route>
-                    ) : (
-                        <Redirect
-                            to={{
-                                pathname: "/login",
-                                search: new URLSearchParams({
+                    </Switch>
+                ) : (
+                    <Redirect
+                        to={{
+                            pathname: "/login",
+                            search: pathname === '/logout'
+                                ? ''
+                                : new URLSearchParams({
                                     next: pathname
                                 }).toString()
-                            }} />
-                    )
-                }
-            </Switch >
-        </authContext.Provider>
+                        }} />
+                )
+            }
+        </Switch >
     );
 }
 
 export default App;
-
-export { useAuthContext };
-

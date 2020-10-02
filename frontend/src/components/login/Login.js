@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Row } from 'react-materialize';
-import { useHistory, useLocation } from 'react-router-dom';
-import { useAuthContext } from '../../App';
+import { useHistory } from 'react-router-dom';
+import { login } from '../../auth';
+import useQuery from '../../hooks/useQuery';
 import { Logo as LogoStyle } from '../navbar/Navbar.module.css';
 import styles from './Login.module.css';
 
@@ -37,39 +38,49 @@ function LoginButton(props) {
     );
 }
 
-function useQuery() {
-    return new URLSearchParams(useLocation().search);
+function LoginError({ error }) {
+    const { non_field_errors } = error;
+    return (
+        <ul style={{ color: 'red' }}>
+            {non_field_errors.map(err => (<li>* {err}</li>))}
+        </ul>
+    );
 }
 
 function LoginForm(props) {
-    const { authenticate } = useAuthContext();
     const history = useHistory();
     const query = useQuery();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [isValid, setValid] = useState(false);
+
+    useEffect(() => {
+        setValid(username.length > 0 && password.length > 0);
+    }, [username, password]
+    );
 
     const submitHandler = (e) => {
         e.preventDefault();
         setLoading(true);
-        authenticate(username, password,
-            () => {
-                history.push({ pathname: query.get('next') || '/home' });
-            });
+        login(username, password).then(() => {
+            history.push({ pathname: query.get('next') || '/home' });
+        }).catch(reason => {
+            setLoading(false);
+            setError(reason);
+        });
     };
-
-    const validate = () => {
-        return username.length > 0 && password.length > 0;
-    }
 
     return (
         <form onSubmit={submitHandler}>
             <Row className={styles.row}>
                 <UsernameLoginField value={username} onChange={(e) => setUsername(e.target.value)} />
                 <PasswordLoginField value={password} onChange={(e) => setPassword(e.target.value)} />
-                <LoginButton disabled={!validate()} />
+                <LoginButton disabled={!isValid} />
             </Row>
             {loading && <p>Loading...</p>}
+            {error && <LoginError error={error} />}
         </form>
     );
 }
